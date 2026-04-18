@@ -17,6 +17,19 @@ export default function Header() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const lenis = useLenis()
 
+  const handleDesktopNavClick = (href) => (event) => {
+    if (window.innerWidth < 1024 || !lenis) return
+
+    event.preventDefault()
+
+    if (href === '#') {
+      lenis.scrollTo(0, { duration: 1.2 })
+      return
+    }
+
+    lenis.scrollTo(href, { duration: 1.2 })
+  }
+
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
@@ -82,6 +95,7 @@ export default function Header() {
               <a
                 key={item.label}
                 href={item.href}
+                onClick={handleDesktopNavClick(item.href)}
                 className="text-sm font-light text-white/70 hover:text-white hover:scale-105 transition-all duration-300 tracking-wide relative group"
               >
                 {item.label}
@@ -92,6 +106,7 @@ export default function Header() {
 
           <a
             href="#contact"
+            onClick={handleDesktopNavClick('#contact')}
             className="hidden lg:flex items-center px-6 py-2.5 bg-gradient-to-r from-violet-600 to-purple-600 text-white text-sm font-medium rounded-full hover:from-violet-500 hover:to-purple-500 hover:shadow-[0_0_25px_rgba(139,92,246,0.4)] active:scale-95 transition-all duration-300"
           >
             ОБСУДИТЬ ПРОЕКТ
