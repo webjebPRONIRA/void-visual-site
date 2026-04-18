@@ -71,7 +71,7 @@ export default function Hero() {
               >
                 <span
                   className="title-line block text-white w-full text-left"
-                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)', paddingLeft: '0.1em' }}
+                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)', marginLeft: '-0.02em', paddingLeft: '0' }}
                 >
                   ДОМИНИРУЙ
                 </span>
@@ -91,7 +91,7 @@ export default function Hero() {
                   className="title-line block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 w-full text-left"
                   style={{
                     filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))',
-                    paddingLeft: '1.2em',
+                    paddingLeft: '0.86em', /* Это выравнивание ровно под буквой "А" в слове НА */
                   }}
                 >
                   ВИЗУАЛ
