@@ -144,8 +144,20 @@ export default function Process() {
   }, [])
 
   return (
-    <section className="py-20 lg:py-28 bg-black border-t border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <section className="py-20 lg:py-28 relative overflow-hidden border-t border-white/5">
+      {/* ── ФОН И ГРАДИЕНТЫ ДЛЯ СЕКЦИИ PROCESS ── */}
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundColor: '#080810' }} />
+      <div className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)',
+      }} />
+      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 50% 50% at 0% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)',
+      }} />
+      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 50% 50% at 100% 50%, rgba(109,40,217,0.08) 0%, transparent 70%)',
+      }} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={titleRef} className="mb-16 lg:mb-20 text-center">
           <span className="text-sm font-semibold tracking-widest uppercase text-white/60 mb-6 block">
             Наш метод

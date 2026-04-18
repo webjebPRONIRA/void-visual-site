@@ -62,32 +62,33 @@ export default function Hero() {
             <div className="flex-1 min-w-0">
               <h1
                 ref={titleRef}
-                className="font-bold tracking-tighter leading-[0.88] uppercase"
+                className="font-bold tracking-tighter uppercase flex flex-col"
                 style={{
                   fontFamily: 'Montserrat, sans-serif',
                   fontSize: 'clamp(3.2rem, 10vw, 7.5rem)',
+                  lineHeight: '0.85',
                 }}
               >
                 <span
-                  className="title-line block text-white"
+                  className="title-line block text-white w-full text-center"
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
                   ДОМИНИРУЙ
                 </span>
                 <span
-                  className="title-line block text-white"
+                  className="title-line block text-white mt-1 w-full text-left"
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
                   НА РЫНКЕ
                 </span>
                 <span
-                  className="title-line block text-white/80 mt-2"
+                  className="title-line block text-white/90 mt-1 w-full text-right"
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.14), 0 0 80px rgba(255,255,255,0.06)' }}
                 >
                   ЧЕРЕЗ
                 </span>
                 <span
-                  className="title-line block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1"
+                  className="title-line block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 w-full text-left"
                   style={{
                     filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))',
                   }}

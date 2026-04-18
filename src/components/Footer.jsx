@@ -41,8 +41,24 @@ export default function Footer() {
   }
 
   return (
-    <footer id="contact" ref={sectionRef} className="py-24 lg:py-32 bg-black">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <footer id="contact" ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden border-t border-white/5">
+      {/* ── ФОН И ГРАДИЕНТЫ ДЛЯ ФУТЕРА ── */}
+      <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundColor: '#080810' }} />
+      <div className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 70%)',
+      }} />
+      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 50% 50% at 0% 100%, rgba(139,92,246,0.12) 0%, transparent 70%)',
+      }} />
+      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] z-0 pointer-events-none" style={{
+        background: 'radial-gradient(ellipse 50% 50% at 100% 100%, rgba(109,40,217,0.12) 0%, transparent 70%)',
+      }} />
+      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{
+        backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.8) 1px, transparent 1px)',
+        backgroundSize: '40px 40px',
+      }} />
+
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={titleRef} className="mb-16 lg:mb-20 text-center">
           <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-none">
             ГОТОВЫ <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-500">ОБСУДИТЬ</span>
@@ -59,7 +75,7 @@ export default function Footer() {
                 href="https://t.me/rodya_designer?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82." 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 p-5 rounded-2xl border border-violet-500/30 bg-gradient-to-r from-violet-600/20 to-purple-600/10 hover:from-violet-600/30 hover:to-purple-600/20 hover:border-violet-500/50 transition-all duration-300"
+                className="group flex items-center gap-4 p-5 rounded-2xl border border-violet-500/30 bg-gradient-to-r from-violet-600/20 to-purple-600/10 hover:from-violet-600/30 hover:to-purple-600/20 hover:border-violet-500/50 transition-all duration-300 backdrop-blur-sm"
               >
                 <div className="w-12 h-12 rounded-xl bg-gradient-to-br from-violet-500 to-purple-600 flex items-center justify-center shadow-[0_0_15px_rgba(139,92,246,0.4)]">
                   <img src="/telegram.png" alt="Telegram" className="w-6 h-6 object-contain" />
@@ -77,7 +93,7 @@ export default function Footer() {
                 href="https://funpay.com/users/15205864/" 
                 target="_blank" 
                 rel="noopener noreferrer"
-                className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-violet-500/30 transition-all duration-300"
+                className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-violet-500/30 transition-all duration-300 backdrop-blur-sm"
               >
                 <div className="w-12 h-12 rounded-xl bg-violet-500/20 flex items-center justify-center text-violet-400 text-xl font-bold">
                   FP
@@ -92,7 +108,7 @@ export default function Footer() {
               </a>
             </div>
 
-            <div className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20">
+            <div className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20 backdrop-blur-sm">
               <h3 className="text-xl font-semibold mb-4 text-white">Почему выбирают нас</h3>
               <ul className="space-y-3 text-base text-white/70">
                 <li className="flex items-center gap-3">
@@ -115,7 +131,7 @@ export default function Footer() {
             </div>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-5">
+          <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
             <div>
               <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">Ваше имя</label>
               <input
@@ -123,7 +139,7 @@ export default function Footer() {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="Как к вам обращаться"
-                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30"
+                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30 backdrop-blur-sm"
               />
             </div>
 
@@ -134,7 +150,7 @@ export default function Footer() {
                 value={formData.telegram}
                 onChange={(e) => setFormData({ ...formData, telegram: e.target.value })}
                 placeholder="@username"
-                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30"
+                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30 backdrop-blur-sm"
               />
             </div>
 
@@ -145,14 +161,14 @@ export default function Footer() {
                 onChange={(e) => setFormData({ ...formData, message: e.target.value })}
                 placeholder="Расскажите о задаче..."
                 rows={4}
-                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none resize-none placeholder:text-white/30"
+                className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none resize-none placeholder:text-white/30 backdrop-blur-sm"
               />
             </div>
 
             <button
               type="submit"
               disabled={!formData.name || !formData.telegram}
-              className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-medium hover:from-violet-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-medium hover:from-violet-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] cursor-pointer"
             >
               Отправить заявку
             </button>

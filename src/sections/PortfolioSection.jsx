@@ -1,6 +1,7 @@
 import { useRef, useEffect, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLenis } from '../context/LenisContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -35,8 +36,17 @@ const portfolioData = [
   },
 ]
 
+// Используем вынесенный компонент и React Portal, чтобы он рендерился поверх всего дерева DOM
+import { createPortal } from 'react-dom'
+
 function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
+  const lenis = useLenis()
+
   useEffect(() => {
+    if (lenis) {
+      lenis.stop()
+    }
+    
     const handleKeyDown = (e) => {
       if (e.key === 'Escape') onClose()
       if (e.key === 'ArrowRight') onNext()
@@ -52,12 +62,15 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
+      if (lenis) {
+        lenis.start()
+      }
     }
-  }, [onClose, onNext, onPrev])
+  }, [onClose, onNext, onPrev, lenis])
 
-  return (
+  const content = (
     <div 
-      className="fixed inset-0 z-[1000] bg-black/95 flex items-center justify-center"
+      className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center"
       onClick={onClose}
     >
       <button
@@ -79,15 +92,21 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
       </button>
 
       <div 
-        className="w-full h-full flex items-center justify-center p-16"
+        className="w-full h-full flex items-center justify-center p-0 md:p-8 lg:p-12"
         onClick={(e) => e.stopPropagation()}
       >
         <img
           src={images[currentIndex]}
           alt={`Image ${currentIndex + 1}`}
-          className="max-w-full max-h-full object-contain"
+          loading="lazy"
+          decoding="async"
+          className="w-full h-full object-contain"
         />
       </div>
+
+      {/* Предзагрузка следующей и предыдущей картинки чтобы избежать мигания */}
+      <img src={images[(currentIndex + 1) % images.length]} className="hidden" aria-hidden="true" alt="" />
+      <img src={images[(currentIndex - 1 + images.length) % images.length]} className="hidden" aria-hidden="true" alt="" />
 
       <button
         onClick={(e) => { e.stopPropagation(); onNext() }}
@@ -105,60 +124,71 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
       </div>
     </div>
   )
+
+  // Рендерим напрямую в body чтобы избежать проблем с z-index или обрезкой родительскими блоками
+  return createPortal(content, document.body)
 }
 
 function SimpleCarousel({ images, isLarge }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [lightbox, setLightbox] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
-  const [isAnimating, setIsAnimating] = useState(false)
   const imageRef = useRef(null)
+  
+  // Ref for tracking animation status to avoid rapid clicks
+  const animatingRef = useRef(false)
 
   useEffect(() => {
-    if (isPaused || isAnimating) return
+    if (isPaused) return
     const interval = setInterval(() => {
-      nextImage()
-    }, 3000)
+      changeImage('next')
+    }, 4000)
     return () => clearInterval(interval)
-  }, [isPaused, isAnimating, images.length])
+  }, [isPaused, currentIndex])
 
-  const nextImage = () => {
-    if (isAnimating) return
-    setIsAnimating(true)
-    gsap.to(imageRef.current, {
-      opacity: 0,
-      scale: 0.95,
-      duration: 0.3,
-      ease: 'power2.in',
-      onComplete: () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length)
-        gsap.to(imageRef.current, {
-          opacity: 1,
-          scale: 1,
-          duration: 0.4,
-          ease: 'power2.out',
-          onComplete: () => setIsAnimating(false)
-        })
+  const changeImage = (direction, targetIndex = null) => {
+    if (animatingRef.current) return
+    animatingRef.current = true
+
+    let nextIndex
+    if (targetIndex !== null) {
+      nextIndex = targetIndex
+    } else {
+      if (direction === 'next') {
+        nextIndex = (currentIndex + 1) % images.length
+      } else {
+        nextIndex = (currentIndex - 1 + images.length) % images.length
       }
-    })
-  }
+    }
 
-  const prevImage = () => {
-    if (isAnimating) return
-    setIsAnimating(true)
+    if (nextIndex === currentIndex) {
+      animatingRef.current = false
+      return
+    }
+    
+    const isMovingForward = 
+      targetIndex !== null 
+        ? targetIndex > currentIndex 
+        : direction === 'next'
+
     gsap.to(imageRef.current, {
       opacity: 0,
-      scale: 0.95,
-      duration: 0.3,
-      ease: 'power2.in',
+      scale: 0.96,
+      x: isMovingForward ? -15 : 15,
+      duration: 0.25,
+      ease: 'power1.inOut',
       onComplete: () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+        setCurrentIndex(nextIndex)
+        gsap.set(imageRef.current, { x: isMovingForward ? 15 : -15 })
         gsap.to(imageRef.current, {
           opacity: 1,
           scale: 1,
-          duration: 0.4,
+          x: 0,
+          duration: 0.3,
           ease: 'power2.out',
-          onComplete: () => setIsAnimating(false)
+          onComplete: () => {
+            animatingRef.current = false
+          }
         })
       }
     })
@@ -175,22 +205,24 @@ function SimpleCarousel({ images, isLarge }) {
 
   return (
     <div 
-      className="relative overflow-hidden cursor-pointer group transition-all duration-300"
-      style={{ 
-        aspectRatio: isLarge ? '16/8' : '16/10',
-      }}
+      className="relative cursor-pointer group transition-all duration-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
       onClick={openLightbox}
     >
-      <div ref={imageRef} className="absolute inset-0 flex items-center justify-center">
+      <div ref={imageRef} className="w-full flex justify-center">
         <img
           src={images[currentIndex]}
           alt={`Slide ${currentIndex + 1}`}
-          className="max-w-full max-h-full object-contain"
-          style={{ borderRadius: '12px' }}
+          loading="lazy"
+          decoding="async"
+          className="w-full h-auto object-contain rounded-xl shadow-[0_0_30px_rgba(139,92,246,0.1)] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.2)] transition-shadow duration-300"
         />
       </div>
+
+      {/* Предзагрузка соседних изображений */}
+      <img src={images[(currentIndex + 1) % images.length]} className="hidden" aria-hidden="true" alt="" />
+      <img src={images[(currentIndex - 1 + images.length) % images.length]} className="hidden" aria-hidden="true" alt="" />
       
       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       
@@ -200,25 +232,7 @@ function SimpleCarousel({ images, isLarge }) {
             key={i}
             onClick={(e) => { 
               e.stopPropagation()
-              if (i === currentIndex) return
-              setIsAnimating(true)
-              gsap.to(imageRef.current, {
-                opacity: 0,
-                scale: 0.95,
-                x: i > currentIndex ? 20 : -20,
-                duration: 0.2,
-                onComplete: () => {
-                  setCurrentIndex(i)
-                  gsap.set(imageRef.current, { x: i > currentIndex ? -20 : 20 })
-                  gsap.to(imageRef.current, {
-                    opacity: 1,
-                    scale: 1,
-                    x: 0,
-                    duration: 0.3,
-                    onComplete: () => setIsAnimating(false)
-                  })
-                }
-              })
+              changeImage(null, i)
             }}
             className={`h-1.5 rounded-full transition-all duration-300 hover:scale-125 ${i === currentIndex ? 'bg-gradient-to-r from-violet-500 to-purple-500 w-8' : 'bg-violet-600/40 w-2 hover:from-violet-400 hover:to-purple-400'}`}
           />
@@ -227,7 +241,7 @@ function SimpleCarousel({ images, isLarge }) {
 
       <button 
         className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
-        onClick={(e) => { e.stopPropagation(); prevImage() }}
+        onClick={(e) => { e.stopPropagation(); changeImage('prev') }}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M15 18l-6-6 6-6" />
@@ -236,7 +250,7 @@ function SimpleCarousel({ images, isLarge }) {
       
       <button 
         className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
-        onClick={(e) => { e.stopPropagation(); nextImage() }}
+        onClick={(e) => { e.stopPropagation(); changeImage('next') }}
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M9 18l6-6-6-6" />

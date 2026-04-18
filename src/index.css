@@ -27,12 +27,12 @@
   }
   
   html {
-    scroll-behavior: smooth;
+    /* scroll-behavior: smooth is disabled to prevent conflict with Lenis */
   }
   
   body {
     font-family: 'Inter', sans-serif;
-    background-color: #000000;
+    background-color: #080810;
     color: #FFFFFF;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
