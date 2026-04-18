@@ -129,22 +129,39 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
   return createPortal(content, document.body)
 }
 
-function SimpleCarousel({ images, isLarge }) {
+function SimpleCarousel({ images }) {
   const [currentIndex, setCurrentIndex] = useState(0)
   const [lightbox, setLightbox] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isInView, setIsInView] = useState(false)
+  const carouselRef = useRef(null)
   const imageRef = useRef(null)
   
   // Ref for tracking animation status to avoid rapid clicks
   const animatingRef = useRef(false)
 
   useEffect(() => {
-    if (isPaused) return
+    if (!carouselRef.current) return
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsInView(entry.isIntersecting)
+      },
+      { threshold: 0.35 }
+    )
+
+    observer.observe(carouselRef.current)
+
+    return () => observer.disconnect()
+  }, [])
+
+  useEffect(() => {
+    if (isPaused || !isInView) return
     const interval = setInterval(() => {
       changeImage('next')
     }, 4000)
     return () => clearInterval(interval)
-  }, [isPaused, currentIndex])
+  }, [isPaused, currentIndex, isInView])
 
   const changeImage = (direction, targetIndex = null) => {
     if (animatingRef.current) return
@@ -205,6 +222,7 @@ function SimpleCarousel({ images, isLarge }) {
 
   return (
     <div 
+      ref={carouselRef}
       className="relative cursor-pointer group transition-all duration-300"
       onMouseEnter={() => setIsPaused(true)}
       onMouseLeave={() => setIsPaused(false)}
@@ -234,14 +252,16 @@ function SimpleCarousel({ images, isLarge }) {
               e.stopPropagation()
               changeImage(null, i)
             }}
-            className={`h-1.5 rounded-full transition-all duration-300 hover:scale-125 ${i === currentIndex ? 'bg-gradient-to-r from-violet-500 to-purple-500 w-8' : 'bg-violet-600/40 w-2 hover:from-violet-400 hover:to-purple-400'}`}
+            className={`mobile-carousel-dot h-2 rounded-full transition-all duration-300 hover:scale-125 ${i === currentIndex ? 'bg-gradient-to-r from-violet-500 to-purple-500 w-8' : 'bg-violet-600/40 w-3 hover:from-violet-400 hover:to-purple-400'}`}
+            aria-label={`Перейти к слайду ${i + 1}`}
           />
         ))}
       </div>
 
       <button 
-        className="absolute left-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
+        className="mobile-tap-target mobile-carousel-arrow absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
         onClick={(e) => { e.stopPropagation(); changeImage('prev') }}
+        aria-label="Предыдущий слайд"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M15 18l-6-6 6-6" />
@@ -249,8 +269,9 @@ function SimpleCarousel({ images, isLarge }) {
       </button>
       
       <button 
-        className="absolute right-2 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
+        className="mobile-tap-target mobile-carousel-arrow absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
         onClick={(e) => { e.stopPropagation(); changeImage('next') }}
+        aria-label="Следующий слайд"
       >
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
           <path d="M9 18l6-6-6-6" />
@@ -295,7 +316,7 @@ function PortfolioBlock({ item, index }) {
   const photoCol = (
     <div className={isPreview ? 'lg:col-span-8' : 'lg:col-span-7'}>
       <div className="lg:sticky lg:top-24">
-        <SimpleCarousel images={item.images} isLarge={isPreview} />
+        <SimpleCarousel images={item.images} />
       </div>
     </div>
   )
@@ -303,7 +324,7 @@ function PortfolioBlock({ item, index }) {
   const textCol = (
     <div className={isPreview ? 'lg:col-span-4' : 'lg:col-span-5'}>
       <div className="flex flex-col gap-6 justify-center h-full">
-        <h2 className="text-3xl lg:text-5xl font-bold tracking-tight uppercase leading-tight">
+        <h2 className="text-[1.85rem] sm:text-3xl lg:text-5xl font-bold tracking-tight uppercase leading-[0.95] sm:leading-tight">
           {item.title.split(' ').map((word, i, arr) => {
             const isAccent = word.toLowerCase().startsWith(item.accentWord?.toLowerCase().charAt(0))
             return (
@@ -317,7 +338,7 @@ function PortfolioBlock({ item, index }) {
             )
           })}
         </h2>
-        <p className="text-xl text-white/70 font-normal leading-relaxed">
+        <p className="text-base sm:text-lg lg:text-xl text-white/70 font-normal leading-relaxed">
           {item.description}
         </p>
       </div>

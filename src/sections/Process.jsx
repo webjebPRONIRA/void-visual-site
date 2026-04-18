@@ -56,7 +56,7 @@ function ProcessStep({ step, index }) {
   return (
     <div
       ref={stepRef}
-      className="group relative p-8 lg:p-10 rounded-3xl border-2 border-white/10 bg-white/[0.03] transition-all duration-300 cursor-pointer hover:bg-white/[0.06] hover:border-white/20"
+      className="group relative p-6 sm:p-8 lg:p-10 rounded-3xl border-2 border-white/10 bg-white/[0.03] transition-all duration-300 cursor-pointer hover:bg-white/[0.06] hover:border-white/20"
       style={{
         opacity: 0,
         transform: 'translateY(40px)',
@@ -72,7 +72,7 @@ function ProcessStep({ step, index }) {
 
       <div className="flex items-start justify-between mb-6">
         <span
-          className="text-5xl font-bold"
+          className="text-4xl sm:text-5xl font-bold"
           style={{
             color: step.color,
             opacity: 0.55,
@@ -91,12 +91,12 @@ function ProcessStep({ step, index }) {
             boxShadow: `0 0 14px ${step.color}CC, 0 0 28px ${step.color}66`,
           }}
         />
-        <h3 className="text-2xl lg:text-3xl font-bold tracking-tight text-white">
+        <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-white">
           {step.title}
         </h3>
       </div>
 
-      <p className="text-lg text-white/75 font-normal leading-relaxed group-hover:text-white transition-colors duration-300">
+      <p className="text-base sm:text-lg text-white/75 font-normal leading-relaxed group-hover:text-white transition-colors duration-300">
         {step.description}
       </p>
     </div>
@@ -163,7 +163,7 @@ export default function Process() {
             Наш метод
           </span>
           <h2
-            className="text-5xl sm:text-6xl lg:text-8xl font-bold tracking-tight"
+            className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight leading-[0.95]"
             style={{
               textShadow: '0 0 40px rgba(255,255,255,0.16), 0 0 80px rgba(255,255,255,0.07)',
             }}
@@ -181,7 +181,7 @@ export default function Process() {
         <div ref={ctaRef} className="mt-16 lg:mt-20 text-center" style={{ opacity: 0 }}>
           {/* Надпись с таким же свечением как у главного заголовка */}
           <p
-            className="text-3xl sm:text-4xl lg:text-5xl font-bold tracking-tight uppercase mb-10"
+            className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight uppercase mb-8 sm:mb-10 leading-tight"
             style={{
               background: 'linear-gradient(to right, #ffffff, rgba(255,255,255,0.85))',
               WebkitBackgroundClip: 'text',
@@ -195,7 +195,7 @@ export default function Process() {
 
           <a
             href="#contact"
-            className="group inline-flex items-center gap-3 px-10 py-5 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-lg rounded-full transition-all duration-300 hover:from-violet-500 hover:to-purple-500"
+            className="group inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-base sm:text-lg rounded-full transition-all duration-300 hover:from-violet-500 hover:to-purple-500"
             style={{
               boxShadow: '0 0 30px rgba(139,92,246,0.40), 0 0 70px rgba(139,92,246,0.15)',
             }}
