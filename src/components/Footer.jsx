@@ -100,7 +100,7 @@ export default function Footer() {
                 </div>
                 <div>
                   <span className="text-base text-white/70 uppercase tracking-wider block mb-1">Написать в Funpay</span>
-                  <span className="text-xl font-semibold group-hover:text-violet-400 transition-colors">VOID VISUAL</span>
+                  <span className="text-xl font-semibold group-hover:text-violet-400 transition-colors">waydamn</span>
                 </div>
                 <svg className="w-5 h-5 text-white/40 ml-auto group-hover:translate-x-1 group-hover:text-violet-400 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
