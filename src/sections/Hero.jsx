@@ -1,10 +1,12 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
+import { useLanguage } from '../context/LanguageContext'
 
 export default function Hero() {
   const titleRef = useRef()
   const textBlockRef = useRef()
   const ctaRef = useRef()
+  const { copy } = useLanguage()
 
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 })
@@ -34,7 +36,7 @@ export default function Hero() {
         '-=0.4'
       )
     }
-  }, [])
+  }, [copy.hero.lines])
 
   return (
     <section className="relative min-h-screen flex items-center overflow-hidden">
@@ -70,49 +72,37 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 sm:gap-12">
             <div className="flex-1 min-w-0">
-              <h1
-                ref={titleRef}
-                className="hero-title font-bold tracking-tighter uppercase flex flex-col"
-              >
+              <h1 ref={titleRef} className="hero-title font-bold tracking-tighter uppercase flex flex-col">
                 <span
                   className="title-line hero-line-dominate block text-white w-full text-left"
-                  style={{
-                    textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)',
-                  }}
+                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
-                  ДОМИНИРУЙ
+                  {copy.hero.lines[0]}
                 </span>
                 <span
                   className="title-line block text-white mt-1 w-full text-left"
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
-                  НА РЫНКЕ
+                  {copy.hero.lines[1]}
                 </span>
                 <span
                   className="title-line hero-line-through block text-white/90 mt-1 w-full text-right"
-                  style={{
-                    textShadow: '0 0 40px rgba(255,255,255,0.14), 0 0 80px rgba(255,255,255,0.06)',
-                  }}
+                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.14), 0 0 80px rgba(255,255,255,0.06)' }}
                 >
-                  ЧЕРЕЗ
+                  {copy.hero.lines[2]}
                 </span>
                 <span
                   className="title-line hero-line-visual block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 w-full text-left"
-                  style={{
-                    filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))',
-                  }}
+                  style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))' }}
                 >
-                  ВИЗУАЛ
+                  {copy.hero.lines[3]}
                 </span>
               </h1>
             </div>
 
-            <div
-              ref={textBlockRef}
-              className="hero-copy lg:w-[340px] xl:w-[380px] lg:pb-2 opacity-0 lg:text-left"
-            >
+            <div ref={textBlockRef} className="hero-copy lg:w-[340px] xl:w-[380px] lg:pb-2 opacity-0 lg:text-left">
               <p className="hero-copy-text text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-md">
-                Дизайн, который цепляет взгляд - на любой платформе
+                {copy.hero.copy}
               </p>
 
               <div ref={ctaRef} className="flex flex-col sm:flex-row gap-3">
@@ -121,14 +111,14 @@ export default function Hero() {
                   className="hero-cta px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 text-center whitespace-nowrap"
                   style={{ boxShadow: '0 0 20px rgba(139,92,246,0.35), 0 0 60px rgba(139,92,246,0.12)' }}
                 >
-                  Заказать дизайн
+                  {copy.hero.primaryCta}
                 </a>
 
                 <a
                   href="#channels"
                   className="hero-cta px-6 py-3 border border-white/30 text-white font-light rounded-full hover:bg-white/10 hover:border-white/50 transition-all duration-300 text-center whitespace-nowrap"
                 >
-                  Посмотреть работы
+                  {copy.hero.secondaryCta}
                 </a>
               </div>
             </div>

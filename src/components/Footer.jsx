@@ -1,6 +1,7 @@
-import { useRef, useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLanguage } from '../context/LanguageContext'
 
 gsap.registerPlugin(ScrollTrigger)
 
@@ -8,7 +9,7 @@ export default function Footer() {
   const sectionRef = useRef()
   const titleRef = useRef()
   const [formData, setFormData] = useState({ name: '', telegram: '', message: '' })
-  const [isSubmitted, setIsSubmitted] = useState(false)
+  const { copy } = useLanguage()
 
   useEffect(() => {
     if (!sectionRef.current || !titleRef.current) return
@@ -27,53 +28,60 @@ export default function Footer() {
         },
       }
     )
-  }, [])
+  }, [copy.footer.titleBottom])
 
-  const handleSubmit = (e) => {
-    e.preventDefault()
-    
-    let message = `Здравствуйте! Хочу обсудить проект.\n\n`
+  const handleSubmit = (event) => {
+    event.preventDefault()
+
+    let message = copy.footer.telegramMessage
     if (formData.message) message += formData.message
-    
+
     const encodedMessage = encodeURIComponent(message)
     window.open(`https://t.me/rodya_designer?text=${encodedMessage}`, '_blank')
-    setIsSubmitted(true)
   }
 
   return (
     <footer id="contact" ref={sectionRef} className="relative py-24 lg:py-32 overflow-hidden border-t border-white/5">
-      {/* ── ФОН И ГРАДИЕНТЫ ДЛЯ ФУТЕРА ── */}
       <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundColor: '#080810' }} />
-      <div className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 70%)',
-      }} />
-      <div className="absolute bottom-0 left-0 w-[500px] h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 50% 50% at 0% 100%, rgba(139,92,246,0.12) 0%, transparent 70%)',
-      }} />
-      <div className="absolute bottom-0 right-0 w-[500px] h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 50% 50% at 100% 100%, rgba(109,40,217,0.12) 0%, transparent 70%)',
-      }} />
-      <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]" style={{
-        backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.8) 1px, transparent 1px)',
-        backgroundSize: '40px 40px',
-      }} />
+      <div
+        className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute bottom-0 left-0 w-[500px] h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 50% 50% at 0% 100%, rgba(139,92,246,0.12) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute bottom-0 right-0 w-[500px] h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 50% 50% at 100% 100%, rgba(109,40,217,0.12) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute inset-0 z-0 pointer-events-none opacity-[0.03]"
+        style={{
+          backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.8) 1px, transparent 1px)',
+          backgroundSize: '40px 40px',
+        }}
+      />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={titleRef} className="mb-16 lg:mb-20 text-center">
           <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-none">
-            ГОТОВЫ <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-500">ОБСУДИТЬ</span>
+            {copy.footer.titleTop}{' '}
+            <span className="text-transparent bg-clip-text bg-gradient-to-r from-violet-400 to-purple-500">
+              {copy.footer.titleAccent}
+            </span>
           </h2>
           <h2 className="text-4xl sm:text-5xl lg:text-7xl font-bold tracking-tight leading-none mt-2">
-            ПРОЕКТ?
+            {copy.footer.titleBottom}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-20 max-w-5xl mx-auto">
           <div className="space-y-8">
             <div className="flex flex-col gap-4">
-              <a 
-                href="https://t.me/rodya_designer?text=%D0%97%D0%B4%D1%80%D0%B0%D0%B2%D1%81%D1%82%D0%B2%D1%83%D0%B9%D1%82%D0%B5!%20%D0%A5%D0%BE%D1%87%D1%83%20%D0%BE%D0%B1%D1%81%D1%83%D0%B4%D0%B8%D1%82%D1%8C%20%D0%BF%D1%80%D0%BE%D0%B5%D0%BA%D1%82." 
-                target="_blank" 
+              <a
+                href="https://t.me/rodya_designer"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-4 p-5 rounded-2xl border border-violet-500/30 bg-gradient-to-r from-violet-600/20 to-purple-600/10 hover:from-violet-600/30 hover:to-purple-600/20 hover:border-violet-500/50 transition-all duration-300 backdrop-blur-sm"
               >
@@ -81,7 +89,7 @@ export default function Footer() {
                   <img src="/telegram.png" alt="Telegram" className="w-6 h-6 object-contain" />
                 </div>
                 <div>
-                  <span className="text-base text-violet-300 uppercase tracking-wider block mb-1">Написать в TG</span>
+                  <span className="text-base text-violet-300 uppercase tracking-wider block mb-1">{copy.footer.telegramLabel}</span>
                   <span className="text-xl font-semibold text-white group-hover:text-violet-300 transition-colors">@rodya_designer</span>
                 </div>
                 <svg className="w-5 h-5 text-violet-400 ml-auto group-hover:translate-x-1 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -89,9 +97,9 @@ export default function Footer() {
                 </svg>
               </a>
 
-              <a 
-                href="https://funpay.com/users/15205864/" 
-                target="_blank" 
+              <a
+                href="https://funpay.com/users/15205864/"
+                target="_blank"
                 rel="noopener noreferrer"
                 className="group flex items-center gap-4 p-5 rounded-2xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-violet-500/30 transition-all duration-300 backdrop-blur-sm"
               >
@@ -99,7 +107,7 @@ export default function Footer() {
                   FP
                 </div>
                 <div>
-                  <span className="text-base text-white/70 uppercase tracking-wider block mb-1">Написать в Funpay</span>
+                  <span className="text-base text-white/70 uppercase tracking-wider block mb-1">{copy.footer.funpayLabel}</span>
                   <span className="text-xl font-semibold group-hover:text-violet-400 transition-colors">waydamn</span>
                 </div>
                 <svg className="w-5 h-5 text-white/40 ml-auto group-hover:translate-x-1 group-hover:text-violet-400 transition-all" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -109,57 +117,49 @@ export default function Footer() {
             </div>
 
             <div className="p-6 rounded-2xl bg-gradient-to-br from-violet-500/10 to-purple-500/10 border border-violet-500/20 backdrop-blur-sm">
-              <h3 className="text-xl font-semibold mb-4 text-white">Почему выбирают нас</h3>
+              <h3 className="text-xl font-semibold mb-4 text-white">{copy.footer.whyTitle}</h3>
               <ul className="space-y-3 text-base text-white/70">
-                <li className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-                  Делаем визуал, который продаёт
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-                  Знаем каждую платформу изнутри
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-                  Один подрядчик для всех площадок
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
-                  Срок от 24 часов
-                </li>
+                {copy.footer.whyItems.map((item) => (
+                  <li key={item} className="flex items-center gap-3">
+                    <span className="w-2 h-2 rounded-full bg-violet-500 shadow-[0_0_8px_rgba(139,92,246,0.6)]" />
+                    {item}
+                  </li>
+                ))}
               </ul>
             </div>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-5 relative z-10">
             <div>
-              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">Ваше имя</label>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">{copy.footer.form.nameLabel}</label>
               <input
                 type="text"
                 value={formData.name}
-                onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                placeholder="Как к вам обращаться"
+                onChange={(event) => setFormData({ ...formData, name: event.target.value })}
+                placeholder={copy.footer.form.namePlaceholder}
                 className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30 backdrop-blur-sm"
               />
             </div>
 
             <div>
-              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">Telegram username</label>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">{copy.footer.form.telegramLabel}</label>
               <input
                 type="text"
                 value={formData.telegram}
-                onChange={(e) => setFormData({ ...formData, telegram: e.target.value })}
-                placeholder="@username"
+                onChange={(event) => setFormData({ ...formData, telegram: event.target.value })}
+                placeholder={copy.footer.form.telegramPlaceholder}
                 className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none placeholder:text-white/30 backdrop-blur-sm"
               />
             </div>
 
             <div>
-              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">Сообщение <span className="text-white/30">(необязательно)</span></label>
+              <label className="text-xs text-white/50 uppercase tracking-wider block mb-2">
+                {copy.footer.form.messageLabel} <span className="text-white/30">{copy.footer.form.messageOptional}</span>
+              </label>
               <textarea
                 value={formData.message}
-                onChange={(e) => setFormData({ ...formData, message: e.target.value })}
-                placeholder="Расскажите о задаче..."
+                onChange={(event) => setFormData({ ...formData, message: event.target.value })}
+                placeholder={copy.footer.form.messagePlaceholder}
                 rows={4}
                 className="w-full px-5 py-4 rounded-xl bg-white/5 border border-white/10 focus:border-violet-500/50 focus:bg-white/10 transition-all outline-none resize-none placeholder:text-white/30 backdrop-blur-sm"
               />
@@ -170,7 +170,7 @@ export default function Footer() {
               disabled={!formData.name || !formData.telegram}
               className="w-full py-4 rounded-xl bg-gradient-to-r from-violet-600 to-purple-600 font-medium hover:from-violet-500 hover:to-purple-500 transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed shadow-[0_0_20px_rgba(139,92,246,0.3)] hover:shadow-[0_0_30px_rgba(139,92,246,0.5)] cursor-pointer"
             >
-              Отправить заявку
+              {copy.footer.form.submit}
             </button>
           </form>
         </div>
@@ -179,10 +179,8 @@ export default function Footer() {
           <div className="flex items-center gap-3">
             <img src="/лого.png" alt="VOID VISUAL" className="h-8 w-auto opacity-60" />
           </div>
-          
-          <p className="text-sm text-white/40">
-            © VOID VISUAL — 2026
-          </p>
+
+          <p className="text-sm text-white/40">{copy.footer.copyright}</p>
         </div>
       </div>
     </footer>

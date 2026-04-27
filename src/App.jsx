@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useState } from 'react'
 import Lenis from 'lenis'
 import { gsap } from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
@@ -9,12 +9,13 @@ import PortfolioSection from './sections/PortfolioSection'
 import Process from './sections/Process'
 import Footer from './components/Footer'
 import Marquee from './sections/Marquee'
+import { LanguageProvider } from './context/LanguageContext'
 import { LenisContext } from './context/LenisContext'
 import './index.css'
 
 gsap.registerPlugin(ScrollTrigger)
 
-function App() {
+function AppShell() {
   const [lenis, setLenis] = useState(null)
 
   useEffect(() => {
@@ -25,10 +26,12 @@ function App() {
     })
 
     lenisInstance.on('scroll', ScrollTrigger.update)
-    const tickerCallback = (time) => { lenisInstance.raf(time * 1000) }
+    const tickerCallback = (time) => {
+      lenisInstance.raf(time * 1000)
+    }
+
     gsap.ticker.add(tickerCallback)
     gsap.ticker.lagSmoothing(0)
-
     setLenis(lenisInstance)
 
     return () => {
@@ -40,8 +43,6 @@ function App() {
   return (
     <LenisContext.Provider value={lenis}>
       <div className="min-h-screen bg-[#080810] text-white overflow-hidden">
-
-        {/* ── Фиксированный фон первой половины (Hero / Stats) ── */}
         <div className="fixed inset-0 z-[-1] pointer-events-none">
           <svg className="absolute inset-0 w-full h-full opacity-[0.03]">
             <filter id="noise">
@@ -51,18 +52,25 @@ function App() {
             <rect width="100%" height="100%" filter="url(#noise)" />
           </svg>
 
-          {/* верхнее центральное зарево */}
-          <div className="absolute top-0 left-0 w-full h-[800px]" style={{
-            background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.10) 0%, transparent 70%)',
-          }} />
+          <div
+            className="absolute top-0 left-0 w-full h-[800px]"
+            style={{
+              background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.10) 0%, transparent 70%)',
+            }}
+          />
 
-          {/* боковые акценты первой половины */}
-          <div className="absolute top-0 left-0 w-[500px] h-full" style={{
-            background: 'radial-gradient(ellipse 50% 40% at 0% 30%, rgba(139,92,246,0.09) 0%, transparent 70%)',
-          }} />
-          <div className="absolute top-0 right-0 w-[500px] h-full" style={{
-            background: 'radial-gradient(ellipse 50% 40% at 100% 30%, rgba(109,40,217,0.09) 0%, transparent 70%)',
-          }} />
+          <div
+            className="absolute top-0 left-0 w-[500px] h-full"
+            style={{
+              background: 'radial-gradient(ellipse 50% 40% at 0% 30%, rgba(139,92,246,0.09) 0%, transparent 70%)',
+            }}
+          />
+          <div
+            className="absolute top-0 right-0 w-[500px] h-full"
+            style={{
+              background: 'radial-gradient(ellipse 50% 40% at 100% 30%, rgba(109,40,217,0.09) 0%, transparent 70%)',
+            }}
+          />
         </div>
 
         <Header />
@@ -70,10 +78,7 @@ function App() {
         <StatsSection />
         <Marquee />
 
-        {/* ── ВТОРАЯ ПОЛОВИНА: relative-обёртка с absolute градиентами ── */}
         <div className="relative">
-
-          {/* левый боковой градиент — 4 пятна по высоте */}
           <div
             className="absolute inset-y-0 left-0 w-[500px] pointer-events-none z-0"
             style={{
@@ -86,7 +91,6 @@ function App() {
             }}
           />
 
-          {/* правый боковой градиент — 4 пятна по высоте */}
           <div
             className="absolute inset-y-0 right-0 w-[500px] pointer-events-none z-0"
             style={{
@@ -99,7 +103,6 @@ function App() {
             }}
           />
 
-          {/* мягкое центральное свечение */}
           <div
             className="absolute inset-0 pointer-events-none z-0"
             style={{
@@ -118,4 +121,10 @@ function App() {
   )
 }
 
-export default App
+export default function App() {
+  return (
+    <LanguageProvider>
+      <AppShell />
+    </LanguageProvider>
+  )
+}

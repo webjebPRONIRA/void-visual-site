@@ -1,35 +1,9 @@
-import { useRef, useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { ScrollTrigger } from 'gsap/ScrollTrigger'
+import { useLanguage } from '../context/LanguageContext'
 
 gsap.registerPlugin(ScrollTrigger)
-
-const steps = [
-  {
-    number: '01',
-    title: 'АНАЛИТИКА',
-    description: 'Погружение в нишу, аудит конкурентов и выявление триггеров целевой аудитории.',
-    color: '#8B5CF6',
-  },
-  {
-    number: '02',
-    title: 'КОНЦЕПЦИЯ',
-    description: 'Разрабатываем визуальную стратегию и композиционный скелет. Подбираем акцентную типографику, цветовую палитру и создаем эскизы, задающие вектор будущей воронки продаж.',
-    color: '#22D3EE',
-  },
-  {
-    number: '03',
-    title: 'ПРОДАКШН',
-    description: 'Финальная реализация графики. Используем ИИ для апскейла и улучшения качества исходников. Работаем с глубокой ретушью и докруткой визуала, доводя макет до абсолюта.',
-    color: '#FB923C',
-  },
-  {
-    number: '04',
-    title: 'ФИНАЛИЗАЦИЯ',
-    description: 'Подготовка и передача материалов. Контролируем полное соответствие графики техническим регламентам и стандартам качества целевых платформ.',
-    color: '#34D399',
-  },
-]
 
 function ProcessStep({ step, index }) {
   const stepRef = useRef()
@@ -57,10 +31,7 @@ function ProcessStep({ step, index }) {
     <div
       ref={stepRef}
       className="group relative p-6 sm:p-8 lg:p-10 rounded-3xl border-2 border-white/10 bg-white/[0.03] transition-all duration-300 cursor-pointer hover:bg-white/[0.06] hover:border-white/20"
-      style={{
-        opacity: 0,
-        transform: 'translateY(40px)',
-      }}
+      style={{ opacity: 0, transform: 'translateY(40px)' }}
     >
       <div
         className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 -z-10"
@@ -106,6 +77,7 @@ function ProcessStep({ step, index }) {
 export default function Process() {
   const titleRef = useRef()
   const ctaRef = useRef()
+  const { copy } = useLanguage()
 
   useEffect(() => {
     if (!titleRef.current) return
@@ -124,10 +96,11 @@ export default function Process() {
         },
       }
     )
-  }, [])
+  }, [copy.process.title])
 
   useEffect(() => {
     if (!ctaRef.current) return
+
     gsap.fromTo(ctaRef.current,
       { y: 30, opacity: 0 },
       {
@@ -141,45 +114,44 @@ export default function Process() {
         },
       }
     )
-  }, [])
+  }, [copy.process.ctaTitle])
 
   return (
     <section className="py-20 lg:py-28 relative overflow-hidden border-t border-white/5">
-      {/* ── ФОН И ГРАДИЕНТЫ ДЛЯ СЕКЦИИ PROCESS ── */}
       <div className="absolute inset-0 z-0 pointer-events-none" style={{ backgroundColor: '#080810' }} />
-      <div className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)',
-      }} />
-      <div className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 50% 50% at 0% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)',
-      }} />
-      <div className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none" style={{
-        background: 'radial-gradient(ellipse 50% 50% at 100% 50%, rgba(109,40,217,0.08) 0%, transparent 70%)',
-      }} />
+      <div
+        className="absolute top-0 left-0 w-full h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 60% 50% at 50% 0%, rgba(139,92,246,0.06) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute top-1/2 left-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 50% 50% at 0% 50%, rgba(139,92,246,0.08) 0%, transparent 70%)' }}
+      />
+      <div
+        className="absolute top-1/2 right-0 -translate-y-1/2 w-[500px] h-[500px] z-0 pointer-events-none"
+        style={{ background: 'radial-gradient(ellipse 50% 50% at 100% 50%, rgba(109,40,217,0.08) 0%, transparent 70%)' }}
+      />
 
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div ref={titleRef} className="mb-16 lg:mb-20 text-center">
           <span className="text-sm font-semibold tracking-widest uppercase text-white/60 mb-6 block">
-            Наш метод
+            {copy.process.label}
           </span>
           <h2
             className="text-4xl sm:text-6xl lg:text-8xl font-bold tracking-tight leading-[0.95]"
-            style={{
-              textShadow: '0 0 40px rgba(255,255,255,0.16), 0 0 80px rgba(255,255,255,0.07)',
-            }}
+            style={{ textShadow: '0 0 40px rgba(255,255,255,0.16), 0 0 80px rgba(255,255,255,0.07)' }}
           >
-            КАК МЫ РАБОТАЕМ
+            {copy.process.title}
           </h2>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 lg:gap-8">
-          {steps.map((step, index) => (
+          {copy.process.steps.map((step, index) => (
             <ProcessStep key={step.number} step={step} index={index} />
           ))}
         </div>
 
         <div ref={ctaRef} className="mt-16 lg:mt-20 text-center" style={{ opacity: 0 }}>
-          {/* Надпись с таким же свечением как у главного заголовка */}
           <p
             className="text-2xl sm:text-4xl lg:text-5xl font-bold tracking-tight uppercase mb-8 sm:mb-10 leading-tight"
             style={{
@@ -190,25 +162,22 @@ export default function Process() {
               filter: 'drop-shadow(0 0 20px rgba(255,255,255,0.20)) drop-shadow(0 0 50px rgba(139,92,246,0.20))',
             }}
           >
-            ГОТОВЫ ОБСУДИТЬ ПРОЕКТ?
+            {copy.process.ctaTitle}
           </p>
 
           <a
             href="#contact"
             className="group inline-flex items-center justify-center gap-3 w-full sm:w-auto px-8 sm:px-10 py-4 sm:py-5 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-semibold text-base sm:text-lg rounded-full transition-all duration-300 hover:from-violet-500 hover:to-purple-500"
-            style={{
-              boxShadow: '0 0 30px rgba(139,92,246,0.40), 0 0 70px rgba(139,92,246,0.15)',
+            style={{ boxShadow: '0 0 30px rgba(139,92,246,0.40), 0 0 70px rgba(139,92,246,0.15)' }}
+            onMouseEnter={(event) => {
+              event.currentTarget.style.boxShadow = '0 0 40px rgba(139,92,246,0.55), 0 0 90px rgba(139,92,246,0.22)'
             }}
-            onMouseEnter={e => { e.currentTarget.style.boxShadow = '0 0 40px rgba(139,92,246,0.55), 0 0 90px rgba(139,92,246,0.22)' }}
-            onMouseLeave={e => { e.currentTarget.style.boxShadow = '0 0 30px rgba(139,92,246,0.40), 0 0 70px rgba(139,92,246,0.15)' }}
+            onMouseLeave={(event) => {
+              event.currentTarget.style.boxShadow = '0 0 30px rgba(139,92,246,0.40), 0 0 70px rgba(139,92,246,0.15)'
+            }}
           >
-            <span>Начать проект</span>
-            <svg
-              className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-1"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
+            <span>{copy.process.ctaButton}</span>
+            <svg className="w-6 h-6 transition-transform duration-300 group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 8l4 4m0 0l-4 4m4-4H3" />
             </svg>
           </a>
