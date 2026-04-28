@@ -7,6 +7,22 @@ export default function Hero() {
   const textBlockRef = useRef()
   const ctaRef = useRef()
   const { copy, language } = useLanguage()
+  const visualLine = copy.hero.lines[3]
+
+  const renderVisualLine = () => {
+    if (language !== 'ru') return visualLine
+
+    return Array.from(visualLine).map((letter, index) => (
+      <span
+        key={`${letter}-${index}`}
+        className={`hero-visual-letter ${
+          index === 2 ? 'hero-visual-letter-z' : index === 4 ? 'hero-visual-letter-a' : index === 5 ? 'hero-visual-letter-l' : ''
+        }`.trim()}
+      >
+        {letter}
+      </span>
+    ))
+  }
 
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 })
@@ -98,7 +114,7 @@ export default function Hero() {
                   className={`title-line hero-line-visual ${language === 'en' ? 'hero-line-visual-en' : ''} block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 text-left`}
                   style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))' }}
                 >
-                  {copy.hero.lines[3]}
+                  {renderVisualLine()}
                 </span>
               </h1>
             </div>

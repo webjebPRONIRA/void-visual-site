@@ -94,6 +94,22 @@
   padding-left: calc(0.87em - 4px);
 }
 
+.hero-visual-letter {
+  display: inline-block;
+}
+
+.hero-visual-letter-z {
+  margin-left: 0.018em;
+}
+
+.hero-visual-letter-a {
+  margin-left: -0.075em;
+}
+
+.hero-visual-letter-l {
+  margin-left: 0.04em;
+}
+
 .hero-line-dominate-en {
   margin-left: 0;
   width: max-content;
