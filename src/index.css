@@ -75,6 +75,12 @@
   letter-spacing: 0;
 }
 
+@media (min-width: 1024px) {
+  .hero-title-en {
+    line-height: calc(0.9em - 5px);
+  }
+}
+
 .hero-line-dominate {
   margin-left: calc(0.015em + 6px);
   padding-left: 0;
