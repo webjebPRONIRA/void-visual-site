@@ -7,8 +7,8 @@ import { useLenis } from '../context/LenisContext'
 gsap.registerPlugin(ScrollTrigger)
 
 const languageOptions = [
-  { code: 'ru', label: 'RU', flag: '🇷🇺' },
-  { code: 'en', label: 'EN', flag: '🇺🇸' },
+  { code: 'ru', label: 'RU' },
+  { code: 'en', label: 'EN' },
 ]
 
 function LanguageSwitcher({ className = '' }) {
@@ -25,14 +25,13 @@ function LanguageSwitcher({ className = '' }) {
           key={option.code}
           type="button"
           onClick={() => setLanguage(option.code)}
-          className={`flex items-center gap-2 rounded-full px-3 py-2 text-xs font-semibold tracking-[0.16em] transition-all duration-300 ${
+          className={`flex items-center rounded-full px-3 py-2 text-xs font-semibold tracking-[0.16em] transition-all duration-300 ${
             language === option.code
               ? 'bg-white text-[#080810] shadow-[0_8px_24px_rgba(255,255,255,0.18)]'
               : 'text-white/70 hover:text-white'
           }`}
           aria-pressed={language === option.code}
         >
-          <span className="text-sm leading-none" aria-hidden="true">{option.flag}</span>
           <span>{option.label}</span>
         </button>
       ))}

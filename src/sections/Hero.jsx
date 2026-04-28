@@ -6,7 +6,7 @@ export default function Hero() {
   const titleRef = useRef()
   const textBlockRef = useRef()
   const ctaRef = useRef()
-  const { copy } = useLanguage()
+  const { copy, language } = useLanguage()
 
   useEffect(() => {
     const tl = gsap.timeline({ delay: 0.3 })
@@ -72,27 +72,30 @@ export default function Hero() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 sm:gap-12">
             <div className="flex-1 min-w-0">
-              <h1 ref={titleRef} className="hero-title font-bold tracking-tighter uppercase flex flex-col">
+              <h1
+                ref={titleRef}
+                className={`hero-title ${language === 'en' ? 'hero-title-en tracking-normal' : 'tracking-tighter'} font-bold uppercase flex flex-col`}
+              >
                 <span
-                  className="title-line hero-line-dominate block text-white w-full text-left"
+                  className={`title-line hero-line-dominate ${language === 'en' ? 'hero-line-dominate-en' : ''} block text-white text-left`}
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
                   {copy.hero.lines[0]}
                 </span>
                 <span
-                  className="title-line block text-white mt-1 w-full text-left"
+                  className={`title-line ${language === 'en' ? 'hero-line-market-en' : ''} block text-white mt-1 text-left`}
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
                 >
                   {copy.hero.lines[1]}
                 </span>
                 <span
-                  className="title-line hero-line-through block text-white/90 mt-1 w-full text-right"
+                  className={`title-line hero-line-through ${language === 'en' ? 'hero-line-through-en' : ''} block text-white/90 mt-1 text-right`}
                   style={{ textShadow: '0 0 40px rgba(255,255,255,0.14), 0 0 80px rgba(255,255,255,0.06)' }}
                 >
                   {copy.hero.lines[2]}
                 </span>
                 <span
-                  className="title-line hero-line-visual block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 w-full text-left"
+                  className={`title-line hero-line-visual ${language === 'en' ? 'hero-line-visual-en' : ''} block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 text-left`}
                   style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))' }}
                 >
                   {copy.hero.lines[3]}

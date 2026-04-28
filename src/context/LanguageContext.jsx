@@ -177,7 +177,7 @@ const translations = {
       {
         id: 'creatives',
         title: 'MARKETPLACE INFOGRAPHICS',
-        description: 'We make your Wildberries and Ozon product cards stand out in competitive categories. We highlight the product, address customer pain points, and build visual funnels that move people toward the purchase.',
+        description: 'We create marketplace product visuals that stand out in crowded categories, highlight the offer, answer customer objections, and guide people toward purchase.',
         accentWord: 'infographics',
       },
       {
