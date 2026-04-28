@@ -109,8 +109,8 @@ export default function Header() {
   return (
     <header className="header fixed top-0 left-0 right-0 z-50 border-b border-transparent transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 sm:h-20 gap-3">
-          <a href="#" className="flex items-center">
+        <div className="relative flex items-center justify-between h-16 sm:h-20 gap-3">
+          <a href="#" className="relative z-10 flex items-center">
             <img
               src="/лого.png"
               alt="VOID VISUAL"
@@ -118,20 +118,21 @@ export default function Header() {
             />
           </a>
 
-          <div className="hidden lg:flex items-center gap-4">
-            <nav className="flex items-center gap-8">
-              {copy.header.nav.map((item) => (
-                <a
-                  key={item.href}
-                  href={item.href}
-                  onClick={handleDesktopNavClick(item.href)}
-                  className="text-sm font-light text-white/70 hover:text-white hover:scale-105 transition-all duration-300 tracking-wide relative group"
-                >
-                  {item.label}
-                  <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-violet-500 transition-all duration-300 group-hover:w-full" />
-                </a>
-              ))}
-            </nav>
+          <nav className="hidden lg:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-8">
+            {copy.header.nav.map((item) => (
+              <a
+                key={item.href}
+                href={item.href}
+                onClick={handleDesktopNavClick(item.href)}
+                className="text-sm font-light text-white/70 hover:text-white hover:scale-105 transition-all duration-300 tracking-wide relative group whitespace-nowrap"
+              >
+                {item.label}
+                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-violet-500 transition-all duration-300 group-hover:w-full" />
+              </a>
+            ))}
+          </nav>
+
+          <div className="hidden lg:flex relative z-10 items-center gap-4">
 
             <LanguageSwitcher />
 
