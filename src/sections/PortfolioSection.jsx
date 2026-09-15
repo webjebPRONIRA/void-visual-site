@@ -6,25 +6,25 @@ import BackgroundWordmark from '../components/BackgroundWordmark'
 
 const portfolioImages = {
   channels: [
-    { src: '/optimized/оформление1.webp', width: 1600, height: 1195 },
-    { src: '/optimized/оформление2.webp', width: 1600, height: 1195 },
-    { src: '/optimized/оформление3.webp', width: 1600, height: 1195 },
-    { src: '/optimized/оформление4.webp', width: 1600, height: 1195 },
-    { src: '/optimized/оформление5.webp', width: 1600, height: 1249 },
+    { src: '/optimized/оформление1.webp', width: 2400, height: 1792 },
+    { src: '/optimized/оформление2.webp', width: 2400, height: 1792 },
+    { src: '/optimized/оформление3.webp', width: 2400, height: 1792 },
+    { src: '/optimized/оформление4.webp', width: 2400, height: 1792 },
+    { src: '/optimized/оформление5.webp', width: 2336, height: 1824 },
   ],
   previews: [
-    { src: '/optimized/1превью1.webp', width: 1600, height: 915 },
+    { src: '/optimized/1превью1.webp', width: 1920, height: 1098 },
     { src: '/optimized/1превью2.webp', width: 928, height: 537 },
     { src: '/optimized/1превью3.webp', width: 929, height: 537 },
-    { src: '/optimized/1превью4.webp', width: 1600, height: 913 },
+    { src: '/optimized/1превью4.webp', width: 1887, height: 1077 },
     { src: '/optimized/1превью5.webp', width: 992, height: 563 },
   ],
   creatives: [
     { src: '/optimized/инфографика1.webp', width: 1233, height: 864 },
-    { src: '/optimized/инфографика2.webp', width: 1600, height: 1122 },
+    { src: '/optimized/инфографика2.webp', width: 2464, height: 1728 },
     { src: '/optimized/инфографика3.webp', width: 1233, height: 864 },
-    { src: '/optimized/инфографика4.webp', width: 1600, height: 1122 },
-    { src: '/optimized/инфографика5.webp', width: 1600, height: 1122 },
+    { src: '/optimized/инфографика4.webp', width: 2464, height: 1728 },
+    { src: '/optimized/инфографика5.webp', width: 2464, height: 1728 },
   ],
   other: [
     { src: '/optimized/прочее1.webp', width: 960, height: 540 },
