@@ -496,7 +496,6 @@
   filter: blur(12px);
   opacity: 0.96;
   pointer-events: none;
-  will-change: transform;
 }
 
 .hero-background-wordmark {
@@ -759,7 +758,12 @@
   padding-block: 17px;
   white-space: nowrap;
   animation: marquee-forward 48s linear infinite;
+  animation-play-state: paused;
   will-change: transform;
+}
+
+.marquee.is-visible .marquee-track {
+  animation-play-state: running;
 }
 
 .marquee-track.is-reverse {
@@ -804,8 +808,7 @@
   content: '';
   filter: blur(14px);
   pointer-events: none;
-  transform: translate3d(var(--glow-shift-x, 0), var(--glow-shift-y, 0), 0) rotate(-8deg);
-  will-change: transform;
+  transform: rotate(-8deg);
 }
 
 .background-wordmark {
@@ -814,7 +817,6 @@
   overflow: visible;
   pointer-events: none;
   user-select: none;
-  will-change: transform;
 }
 
 .background-wordmark :is(text, path) {
@@ -860,7 +862,7 @@
 .portfolio-section:nth-child(even)::before {
   right: -20vw;
   left: auto;
-  transform: translate3d(var(--glow-shift-x, 0), var(--glow-shift-y, 0), 0) rotate(8deg);
+  transform: rotate(8deg);
 }
 
 .portfolio-section:nth-child(even) > .section-wordmark-primary {
@@ -1165,8 +1167,7 @@
   content: '';
   filter: blur(16px);
   pointer-events: none;
-  transform: translate3d(var(--glow-shift-x, 0), var(--glow-shift-y, 0), 0) rotate(9deg);
-  will-change: transform;
+  transform: rotate(9deg);
 }
 
 .process-section > .section-wordmark-primary {
@@ -1309,8 +1310,6 @@
   content: '';
   filter: blur(12px);
   pointer-events: none;
-  transform: translate3d(var(--glow-shift-x, 0), var(--glow-shift-y, 0), 0);
-  will-change: transform;
 }
 
 .site-footer > .section-wordmark-primary {

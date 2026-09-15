@@ -1,3 +1,5 @@
+import { useEffect, useRef } from 'react'
+
 const platforms = ['OZON', 'WILDBERRIES', 'YOUTUBE', 'TWITCH', 'VK', 'TELEGRAM']
 
 function MarqueeTrack({ reverse }) {
@@ -16,8 +18,22 @@ function MarqueeTrack({ reverse }) {
 }
 
 export default function Marquee({ reverse = false }) {
+  const marqueeRef = useRef(null)
+
+  useEffect(() => {
+    const marquee = marqueeRef.current
+    if (!marquee) return undefined
+
+    const observer = new IntersectionObserver(([entry]) => {
+      marquee.classList.toggle('is-visible', entry.isIntersecting)
+    })
+
+    observer.observe(marquee)
+    return () => observer.disconnect()
+  }, [])
+
   return (
-    <div className="marquee" aria-hidden="true">
+    <div ref={marqueeRef} className="marquee" aria-hidden="true">
       <MarqueeTrack reverse={reverse} />
       <MarqueeTrack reverse={reverse} />
     </div>

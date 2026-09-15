@@ -219,6 +219,7 @@ function ProjectGallery({ images, title }) {
               alt={`${title}. ${copy.carousel.slideAlt} ${index + 1}`}
               loading="lazy"
               decoding="async"
+              fetchPriority="low"
             />
           </button>
         ))}
