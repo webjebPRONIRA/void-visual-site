@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react'
 import gsap from 'gsap'
 import { useLanguage } from '../context/LanguageContext'
+import BackgroundWordmark from '../components/BackgroundWordmark'
 
 export default function Hero() {
   const titleRef = useRef()
@@ -25,21 +26,27 @@ export default function Hero() {
   }
 
   useEffect(() => {
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    if (reduceMotion) {
+      gsap.set([titleRef.current?.querySelectorAll('.title-line'), textBlockRef.current, ctaRef.current?.children], { opacity: 1, y: 0 })
+      return undefined
+    }
+
     const tl = gsap.timeline({ delay: 0.3 })
 
     if (titleRef.current) {
       tl.fromTo(
         titleRef.current.querySelectorAll('.title-line'),
         { y: 80, opacity: 0 },
-        { y: 0, opacity: 1, duration: 1, stagger: 0.15, ease: 'power3.out' }
+        { y: 0, opacity: 1, duration: 0.85, stagger: 0.1, ease: 'power3.out' }
       )
     }
 
     if (textBlockRef.current) {
       tl.fromTo(
         textBlockRef.current,
-        { opacity: 0, y: 30 },
-        { opacity: 1, y: 0, duration: 0.8, ease: 'power3.out' },
+        { opacity: 0, y: 20 },
+        { opacity: 1, y: 0, duration: 0.65, ease: 'power3.out' },
         '-=0.6'
       )
     }
@@ -47,109 +54,76 @@ export default function Hero() {
     if (ctaRef.current) {
       tl.fromTo(
         ctaRef.current.children,
-        { opacity: 0, y: 20 },
-        { opacity: 1, y: 0, duration: 0.6, stagger: 0.1, ease: 'back.out(1.7)' },
+        { opacity: 0, y: 14 },
+        { opacity: 1, y: 0, duration: 0.5, stagger: 0.08, ease: 'power2.out' },
         '-=0.4'
       )
     }
+    return () => tl.kill()
   }, [copy.hero.lines])
 
   return (
-    <section className="relative min-h-screen flex items-center overflow-hidden">
-      <div
-        className="absolute inset-0 z-0"
-        style={{
-          background: 'linear-gradient(135deg, #080810 0%, #0f0820 40%, #130a28 60%, #080810 100%)',
-        }}
-      />
-      <svg className="absolute inset-0 z-0 w-full h-full opacity-[0.035] pointer-events-none">
-        <filter id="noise">
-          <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" stitchTiles="stitch" />
-          <feColorMatrix type="saturate" values="0" />
-        </filter>
-        <rect width="100%" height="100%" filter="url(#noise)" />
-      </svg>
-      <div
-        className="absolute inset-0 z-0 pointer-events-none opacity-[0.07]"
-        style={{
-          backgroundImage: 'radial-gradient(circle, rgba(139,92,246,0.8) 1px, transparent 1px)',
-          backgroundSize: '40px 40px',
-        }}
-      />
-      <div className="absolute inset-0 z-0 bg-gradient-to-b from-transparent via-transparent to-black/80" />
-      <div
-        className="absolute inset-0 z-0 opacity-40"
-        style={{
-          background: 'radial-gradient(ellipse 70% 50% at 50% 0%, rgba(139, 92, 246, 0.18) 0%, transparent 100%)',
-        }}
-      />
-
-      <div className="relative z-10 w-full pt-16 sm:pt-20 lg:pt-4">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-8 sm:gap-12">
-            <div className="flex-1 min-w-0">
+    <section className="hero-section">
+      <div className="hero-canvas" aria-hidden="true">
+        <span className="hero-ambient-glow" />
+        <BackgroundWordmark word="VOID" className="hero-background-wordmark hero-background-wordmark-void" />
+        <BackgroundWordmark word="VISUAL" className="hero-background-wordmark hero-background-wordmark-visual" />
+      </div>
+      <div className="content-container hero-inner">
+        <div className="hero-layout">
+          <div className="hero-title-wrap">
               <h1
                 ref={titleRef}
                 className={`hero-title ${language === 'en' ? 'hero-title-en tracking-normal' : 'tracking-tighter'} font-bold uppercase flex flex-col`}
               >
                 <span
-                  className={`title-line hero-line-dominate ${language === 'en' ? 'hero-line-dominate-en' : ''} block text-white text-left`}
-                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
+                  className={`title-line hero-line-dominate ${language === 'en' ? 'hero-line-dominate-en' : ''} block text-left`}
                 >
                   {copy.hero.lines[0]}
                 </span>
                 <span
-                  className={`title-line ${language === 'en' ? 'hero-line-market-en' : ''} block text-white mt-1 text-left`}
-                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.18), 0 0 80px rgba(255,255,255,0.08)' }}
+                  className={`title-line ${language === 'en' ? 'hero-line-market-en' : ''} block text-left`}
                 >
                   {copy.hero.lines[1]}
                 </span>
                 <span
-                  className={`title-line hero-line-through ${language === 'en' ? 'hero-line-through-en' : ''} block text-white/90 mt-1 text-right`}
-                  style={{ textShadow: '0 0 40px rgba(255,255,255,0.14), 0 0 80px rgba(255,255,255,0.06)' }}
+                  className={`title-line hero-line-through ${language === 'en' ? 'hero-line-through-en' : ''} block text-right`}
                 >
                   {copy.hero.lines[2]}
                 </span>
                 <span
-                  className={`title-line hero-line-visual ${language === 'en' ? 'hero-line-visual-en' : ''} block bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent mt-1 text-left`}
-                  style={{ filter: 'drop-shadow(0 0 18px rgba(139,92,246,0.55)) drop-shadow(0 0 40px rgba(139,92,246,0.25))' }}
+                  className={`title-line hero-line-visual ${language === 'en' ? 'hero-line-visual-en' : ''} block text-left`}
                 >
                   {renderVisualLine()}
                 </span>
               </h1>
-            </div>
+          </div>
 
-            <div ref={textBlockRef} className="hero-copy lg:w-[340px] xl:w-[380px] lg:pb-2 opacity-0 lg:text-left">
-              <p className="hero-copy-text text-sm sm:text-base text-white/60 font-light leading-relaxed mb-6 max-w-md">
+          <div ref={textBlockRef} className="hero-copy">
+              <p className="hero-copy-text">
                 {copy.hero.copy}
               </p>
 
-              <div ref={ctaRef} className="flex flex-col sm:flex-row gap-3">
+              <div ref={ctaRef} className="hero-actions">
                 <a
                   href="#contact"
-                  className="hero-cta px-6 py-3 bg-gradient-to-r from-violet-600 to-purple-600 text-white font-medium rounded-full hover:from-violet-500 hover:to-purple-500 transition-all duration-300 text-center whitespace-nowrap"
-                  style={{ boxShadow: '0 0 20px rgba(139,92,246,0.35), 0 0 60px rgba(139,92,246,0.12)' }}
+                  className="button hero-cta"
                 >
                   {copy.hero.primaryCta}
                 </a>
 
                 <a
                   href="#channels"
-                  className="hero-cta px-6 py-3 border border-white/30 text-white font-light rounded-full hover:bg-white/10 hover:border-white/50 transition-all duration-300 text-center whitespace-nowrap"
+                  className="button button-secondary hero-cta"
                 >
                   {copy.hero.secondaryCta}
                 </a>
               </div>
-            </div>
           </div>
         </div>
       </div>
 
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 hidden sm:block">
-        <div className="w-6 h-10 border-2 border-white/20 rounded-full flex items-start justify-center p-2">
-          <div className="w-1 h-2 bg-white/40 rounded-full animate-bounce" />
-        </div>
-      </div>
+      <div className="hero-scroll-indicator" aria-hidden="true"><span /></div>
     </section>
   )
 }

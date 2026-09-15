@@ -1,26 +1,52 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
-import gsap from 'gsap'
-import { ScrollTrigger } from 'gsap/ScrollTrigger'
 import { useLanguage } from '../context/LanguageContext'
 import { useLenis } from '../context/LenisContext'
-
-gsap.registerPlugin(ScrollTrigger)
+import BackgroundWordmark from '../components/BackgroundWordmark'
 
 const portfolioImages = {
-  channels: ['/optimized/оформление1.webp', '/optimized/оформление2.webp', '/optimized/оформление3.webp', '/optimized/оформление4.webp', '/optimized/оформление5.webp'],
-  previews: ['/optimized/1превью1.webp', '/optimized/1превью2.webp', '/optimized/1превью3.webp', '/optimized/1превью4.webp', '/optimized/1превью5.webp'],
-  creatives: ['/optimized/инфографика1.webp', '/optimized/инфографика2.webp', '/optimized/инфографика3.webp', '/optimized/инфографика4.webp', '/optimized/инфографика5.webp'],
-  other: ['/optimized/прочее1.webp', '/optimized/прочее2.webp', '/optimized/прочее3.webp', '/optimized/прочее4.webp', '/optimized/прочее5.webp'],
+  channels: [
+    { src: '/optimized/оформление1.webp', width: 1600, height: 1195 },
+    { src: '/optimized/оформление2.webp', width: 1600, height: 1195 },
+    { src: '/optimized/оформление3.webp', width: 1600, height: 1195 },
+    { src: '/optimized/оформление4.webp', width: 1600, height: 1195 },
+    { src: '/optimized/оформление5.webp', width: 1600, height: 1249 },
+  ],
+  previews: [
+    { src: '/optimized/1превью1.webp', width: 1600, height: 915 },
+    { src: '/optimized/1превью2.webp', width: 928, height: 537 },
+    { src: '/optimized/1превью3.webp', width: 929, height: 537 },
+    { src: '/optimized/1превью4.webp', width: 1600, height: 913 },
+    { src: '/optimized/1превью5.webp', width: 992, height: 563 },
+  ],
+  creatives: [
+    { src: '/optimized/инфографика1.webp', width: 1233, height: 864 },
+    { src: '/optimized/инфографика2.webp', width: 1600, height: 1122 },
+    { src: '/optimized/инфографика3.webp', width: 1233, height: 864 },
+    { src: '/optimized/инфографика4.webp', width: 1600, height: 1122 },
+    { src: '/optimized/инфографика5.webp', width: 1600, height: 1122 },
+  ],
+  other: [
+    { src: '/optimized/прочее1.webp', width: 960, height: 540 },
+    { src: '/optimized/прочее2.webp', width: 736, height: 736 },
+    { src: '/optimized/прочее3.webp', width: 1325, height: 740 },
+    { src: '/optimized/прочее4.webp', width: 1280, height: 960 },
+    { src: '/optimized/прочее5.webp', width: 1200, height: 900 },
+  ],
 }
 
-function normalizeWord(word) {
-  return word.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '')
+function Arrow({ direction = 'right' }) {
+  return (
+    <svg aria-hidden="true" viewBox="0 0 24 24" fill="none">
+      <path d={direction === 'left' ? 'M15 5 8 12l7 7' : 'm9 5 7 7-7 7'} stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  )
 }
 
-function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
+function Lightbox({ images, currentIndex, title, onClose, onNext, onPrev }) {
   const lenis = useLenis()
   const { copy } = useLanguage()
+  const image = images[currentIndex]
 
   useEffect(() => {
     lenis?.stop()
@@ -44,303 +70,198 @@ function Lightbox({ images, currentIndex, onClose, onNext, onPrev }) {
   }, [lenis, onClose, onNext, onPrev])
 
   return createPortal(
-    <div className="fixed inset-0 z-[9999] bg-black/95 flex items-center justify-center" onClick={onClose}>
-      <button
-        onClick={(event) => {
-          event.stopPropagation()
-          onClose()
-        }}
-        className="absolute top-4 right-4 w-12 h-12 rounded-full border border-white/20 flex items-center justify-center text-white/60 hover:text-white hover:border-white transition-all duration-300 z-20"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M18 6L6 18M6 6l12 12" />
-        </svg>
+    <div className="lightbox" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
+      <button className="lightbox-close" type="button" aria-label={copy.header.closeMenu} onClick={(event) => { event.stopPropagation(); onClose() }}>
+        <span aria-hidden="true" />
+        <span aria-hidden="true" />
       </button>
 
-      <button
-        onClick={(event) => {
-          event.stopPropagation()
-          onPrev()
-        }}
-        className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white/70 hover:bg-violet-600 hover:border-violet-500 transition-all duration-300 z-20"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
+      <button className="lightbox-arrow lightbox-arrow-left" type="button" aria-label={copy.carousel.prevSlide} onClick={(event) => { event.stopPropagation(); onPrev() }}>
+        <Arrow direction="left" />
       </button>
 
-      <div className="w-full h-full flex items-center justify-center p-0 md:p-8 lg:p-12" onClick={(event) => event.stopPropagation()}>
+      <div className="lightbox-stage" onClick={(event) => event.stopPropagation()}>
         <img
-          src={images[currentIndex]}
-          alt={`${copy.carousel.imageAlt} ${currentIndex + 1}`}
-          loading="lazy"
+          src={image.src}
+          width={image.width}
+          height={image.height}
+          alt={`${title}. ${copy.carousel.slideAlt} ${currentIndex + 1}`}
           decoding="async"
-          className="w-full h-full object-contain"
         />
       </div>
 
-      <img src={images[(currentIndex + 1) % images.length]} className="hidden" aria-hidden="true" alt="" />
-      <img src={images[(currentIndex - 1 + images.length) % images.length]} className="hidden" aria-hidden="true" alt="" />
-
-      <button
-        onClick={(event) => {
-          event.stopPropagation()
-          onNext()
-        }}
-        className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 rounded-full bg-white/10 border border-white/20 flex items-center justify-center text-white/70 hover:bg-violet-600 hover:border-violet-500 transition-all duration-300 z-20"
-      >
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
+      <button className="lightbox-arrow lightbox-arrow-right" type="button" aria-label={copy.carousel.nextSlide} onClick={(event) => { event.stopPropagation(); onNext() }}>
+        <Arrow />
       </button>
 
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2 text-white/70 text-sm z-20">
-        <span>{currentIndex + 1}</span>
-        <span className="text-white/40">/</span>
-        <span>{images.length}</span>
+      <div className="lightbox-count" aria-live="polite">
+        {String(currentIndex + 1).padStart(2, '0')} / {String(images.length).padStart(2, '0')}
       </div>
     </div>,
     document.body
   )
 }
 
-function SimpleCarousel({ images }) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [lightbox, setLightbox] = useState(false)
-  const [isPaused, setIsPaused] = useState(false)
-  const [isInView, setIsInView] = useState(false)
-  const carouselRef = useRef(null)
-  const imageRef = useRef(null)
-  const animatingRef = useRef(false)
+function ProjectGallery({ images, title }) {
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [lightboxIndex, setLightboxIndex] = useState(null)
+  const trackRef = useRef(null)
+  const targetIndexRef = useRef(null)
+  const unlockTimerRef = useRef(null)
   const { copy } = useLanguage()
 
   useEffect(() => {
-    if (!carouselRef.current) return
+    const track = trackRef.current
+    if (!track) return
 
-    const observer = new IntersectionObserver(([entry]) => {
-      setIsInView(entry.isIntersecting)
-    }, { threshold: 0.35 })
+    const slides = Array.from(track.querySelectorAll('[data-gallery-slide]'))
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (targetIndexRef.current !== null) return
 
-    observer.observe(carouselRef.current)
-    return () => observer.disconnect()
-  }, [])
+        const visible = entries
+          .filter((entry) => entry.isIntersecting)
+          .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0]
 
-  useEffect(() => {
-    if (isPaused || !isInView) return
-    const interval = setInterval(() => {
-      changeImage('next')
-    }, 4000)
-    return () => clearInterval(interval)
-  }, [isPaused, currentIndex, isInView])
-
-  const changeImage = (direction, targetIndex = null) => {
-    if (animatingRef.current) return
-    animatingRef.current = true
-
-    let nextIndex
-    if (targetIndex !== null) {
-      nextIndex = targetIndex
-    } else if (direction === 'next') {
-      nextIndex = (currentIndex + 1) % images.length
-    } else {
-      nextIndex = (currentIndex - 1 + images.length) % images.length
-    }
-
-    if (nextIndex === currentIndex) {
-      animatingRef.current = false
-      return
-    }
-
-    const isMovingForward = targetIndex !== null ? targetIndex > currentIndex : direction === 'next'
-
-    gsap.to(imageRef.current, {
-      opacity: 0,
-      scale: 0.96,
-      x: isMovingForward ? -15 : 15,
-      duration: 0.25,
-      ease: 'power1.inOut',
-      onComplete: () => {
-        setCurrentIndex(nextIndex)
-        gsap.set(imageRef.current, { x: isMovingForward ? 15 : -15 })
-        gsap.to(imageRef.current, {
-          opacity: 1,
-          scale: 1,
-          x: 0,
-          duration: 0.3,
-          ease: 'power2.out',
-          onComplete: () => {
-            animatingRef.current = false
-          },
-        })
+        if (visible) setActiveIndex(Number(visible.target.dataset.gallerySlide))
       },
-    })
+      { root: track, threshold: [0.45, 0.65, 0.85] }
+    )
+
+    const finishProgrammaticScroll = () => {
+      if (targetIndexRef.current === null) return
+      setActiveIndex(targetIndexRef.current)
+      targetIndexRef.current = null
+      window.clearTimeout(unlockTimerRef.current)
+    }
+
+    slides.forEach((slide) => observer.observe(slide))
+    track.addEventListener('scrollend', finishProgrammaticScroll)
+
+    return () => {
+      observer.disconnect()
+      track.removeEventListener('scrollend', finishProgrammaticScroll)
+      window.clearTimeout(unlockTimerRef.current)
+    }
+  }, [images])
+
+  const scrollToIndex = (index) => {
+    const track = trackRef.current
+    const slide = track?.querySelector(`[data-gallery-slide="${index}"]`)
+    if (!track || !slide) return
+
+    const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    const left = slide.offsetLeft - (track.clientWidth - slide.clientWidth) / 2
+
+    targetIndexRef.current = index
+    setActiveIndex(index)
+    track.scrollTo({ left, behavior: reducedMotion ? 'auto' : 'smooth' })
+
+    window.clearTimeout(unlockTimerRef.current)
+    unlockTimerRef.current = window.setTimeout(() => {
+      targetIndexRef.current = null
+    }, reducedMotion ? 50 : 1200)
   }
 
-  if (lightbox) {
-    return (
-      <Lightbox
-        images={images}
-        currentIndex={currentIndex}
-        onClose={() => setLightbox(false)}
-        onNext={() => setCurrentIndex((prev) => (prev + 1) % images.length)}
-        onPrev={() => setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)}
-      />
-    )
+  const changeSlide = (direction) => {
+    const nextIndex = direction === 'next'
+      ? (activeIndex + 1) % images.length
+      : (activeIndex - 1 + images.length) % images.length
+
+    scrollToIndex(nextIndex)
+  }
+
+  const handleKeyDown = (event) => {
+    if (event.key === 'ArrowRight') changeSlide('next')
+    if (event.key === 'ArrowLeft') changeSlide('prev')
   }
 
   return (
-    <div
-      ref={carouselRef}
-      className="relative cursor-pointer group transition-all duration-300"
-      onMouseEnter={() => setIsPaused(true)}
-      onMouseLeave={() => setIsPaused(false)}
-      onClick={() => setLightbox(true)}
-    >
-      <div ref={imageRef} className="w-full flex justify-center">
-        <img
-          src={images[currentIndex]}
-          alt={`${copy.carousel.slideAlt} ${currentIndex + 1}`}
-          loading="lazy"
-          decoding="async"
-          className="w-full h-auto object-contain rounded-xl shadow-[0_0_30px_rgba(139,92,246,0.1)] group-hover:shadow-[0_0_40px_rgba(139,92,246,0.2)] transition-shadow duration-300"
-        />
+    <div className="portfolio-gallery">
+      <div className="portfolio-gallery-toolbar content-container">
+        <div className="portfolio-gallery-count" aria-live="polite">
+          <span>{String(activeIndex + 1).padStart(2, '0')}</span>
+          <span>/</span>
+          <span>{String(images.length).padStart(2, '0')}</span>
+        </div>
+
+        <div className="portfolio-gallery-controls">
+          <button type="button" aria-label={copy.carousel.prevSlide} onClick={() => changeSlide('prev')}>
+            <Arrow direction="left" />
+          </button>
+          <button type="button" aria-label={copy.carousel.nextSlide} onClick={() => changeSlide('next')}>
+            <Arrow />
+          </button>
+        </div>
       </div>
 
-      <img src={images[(currentIndex + 1) % images.length]} className="hidden" aria-hidden="true" alt="" />
-      <img src={images[(currentIndex - 1 + images.length) % images.length]} className="hidden" aria-hidden="true" alt="" />
-
-      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-
-      <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex items-center gap-2">
-        {images.map((_, index) => (
+      <div
+        ref={trackRef}
+        className="portfolio-gallery-track"
+        tabIndex="0"
+        onKeyDown={handleKeyDown}
+        aria-label={title}
+      >
+        {images.map((image, index) => (
           <button
-            key={index}
-            onClick={(event) => {
-              event.stopPropagation()
-              changeImage(null, index)
-            }}
-            className={`mobile-carousel-dot h-2 rounded-full transition-all duration-300 hover:scale-125 ${index === currentIndex ? 'bg-gradient-to-r from-violet-500 to-purple-500 w-8' : 'bg-violet-600/40 w-3 hover:from-violet-400 hover:to-purple-400'}`}
+            key={image.src}
+            type="button"
+            className="portfolio-slide"
+            data-gallery-slide={index}
+            style={{ '--image-ratio': image.width / image.height }}
+            onClick={() => setLightboxIndex(index)}
             aria-label={`${copy.carousel.goToSlide} ${index + 1}`}
-          />
+          >
+            <img
+              src={image.src}
+              width={image.width}
+              height={image.height}
+              alt={`${title}. ${copy.carousel.slideAlt} ${index + 1}`}
+              loading="lazy"
+              decoding="async"
+            />
+          </button>
         ))}
       </div>
 
-      <button
-        className="mobile-tap-target mobile-carousel-arrow absolute left-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
-        onClick={(event) => {
-          event.stopPropagation()
-          changeImage('prev')
-        }}
-        aria-label={copy.carousel.prevSlide}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M15 18l-6-6 6-6" />
-        </svg>
-      </button>
-
-      <button
-        className="mobile-tap-target mobile-carousel-arrow absolute right-2 top-1/2 -translate-y-1/2 w-11 h-11 rounded-full bg-black/70 border border-white/30 flex items-center justify-center text-white/80 hover:bg-violet-600 hover:border-violet-500 hover:scale-105 active:scale-90 transition-all duration-300 opacity-0 group-hover:opacity-100 z-10"
-        onClick={(event) => {
-          event.stopPropagation()
-          changeImage('next')
-        }}
-        aria-label={copy.carousel.nextSlide}
-      >
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-          <path d="M9 18l6-6-6-6" />
-        </svg>
-      </button>
+      {lightboxIndex !== null && (
+        <Lightbox
+          images={images}
+          currentIndex={lightboxIndex}
+          title={title}
+          onClose={() => setLightboxIndex(null)}
+          onNext={() => setLightboxIndex((index) => (index + 1) % images.length)}
+          onPrev={() => setLightboxIndex((index) => (index - 1 + images.length) % images.length)}
+        />
+      )}
     </div>
   )
 }
 
 function PortfolioBlock({ item, index }) {
-  const sectionRef = useRef()
-  const imageFirst = index % 2 === 1
-
-  useEffect(() => {
-    if (!sectionRef.current) return
-
-    gsap.fromTo(sectionRef.current,
-      { y: 30, opacity: 0 },
-      {
-        y: 0,
-        opacity: 1,
-        duration: 0.8,
-        ease: 'power3.out',
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: 'top 80%',
-        },
-      }
-    )
-  }, [])
-
-  const isLeft = index % 2 === 0
-  const bgAccent = isLeft
-    ? `radial-gradient(ellipse 55% 80% at -5% 50%, rgba(139, 92, 246, 0.13) 0%, transparent 65%),
-       radial-gradient(ellipse 40% 40% at 15% 50%, rgba(109, 40, 217, 0.07) 0%, transparent 50%)`
-    : `radial-gradient(ellipse 55% 80% at 105% 50%, rgba(139, 92, 246, 0.13) 0%, transparent 65%),
-       radial-gradient(ellipse 40% 40% at 85% 50%, rgba(109, 40, 217, 0.07) 0%, transparent 50%)`
-
-  const isPreview = item.id === 'previews'
-  const accentKey = item.accentWord.toLowerCase()
-
-  const photoCol = (
-    <div className={isPreview ? 'lg:col-span-8' : 'lg:col-span-7'}>
-      <div className="lg:sticky lg:top-24">
-        <SimpleCarousel images={item.images} />
-      </div>
-    </div>
-  )
-
-  const textCol = (
-    <div className={isPreview ? 'lg:col-span-4' : 'lg:col-span-5'}>
-      <div className="flex flex-col gap-6 justify-center h-full">
-        <h2 className="text-[1.85rem] sm:text-3xl lg:text-5xl font-bold tracking-tight uppercase leading-[0.95] sm:leading-tight">
-          {item.title.split(' ').map((word, wordIndex, words) => {
-            const normalized = normalizeWord(word)
-            const isAccent = normalized === accentKey
-            return (
-              <span
-                key={`${word}-${wordIndex}`}
-                className={isAccent ? 'bg-gradient-to-r from-violet-400 to-purple-500 bg-clip-text text-transparent' : 'text-white'}
-                style={isAccent ? { textShadow: '0 0 20px rgba(139, 92, 246, 0.5)' } : {}}
-              >
-                {word}{wordIndex < words.length - 1 ? ' ' : ''}
-              </span>
-            )
-          })}
-        </h2>
-        <p className="text-base sm:text-lg lg:text-xl text-white/70 font-normal leading-relaxed">
-          {item.description}
-        </p>
-      </div>
-    </div>
-  )
-
   return (
-    <section id={item.id} ref={sectionRef} className="py-16 lg:py-24 border-t border-white/5 relative overflow-hidden">
-      <div className="absolute inset-0 z-[-1] pointer-events-none" style={{ background: bgAccent }} />
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-16 items-center">
-          {imageFirst ? <>{photoCol}{textCol}</> : <>{textCol}{photoCol}</>}
+    <section id={item.id} className={`portfolio-section portfolio-section-${item.id}`}>
+      <BackgroundWordmark word="VOID" className="section-wordmark section-wordmark-primary" />
+      <BackgroundWordmark word="VISUAL" className="section-wordmark section-wordmark-secondary" />
+      <div className="content-container portfolio-heading-grid">
+        <div className="portfolio-section-number" aria-hidden="true">
+          {String(index + 1).padStart(2, '0')}
         </div>
+        <h2>{item.title}</h2>
+        <p>{item.description}</p>
       </div>
+
+      <ProjectGallery images={item.images} title={item.title} />
     </section>
   )
 }
 
 export default function PortfolioSection() {
   const { copy } = useLanguage()
-
-  const portfolioData = copy.portfolio.map((item) => ({
-    ...item,
-    images: portfolioImages[item.id],
-  }))
+  const portfolioData = copy.portfolio.map((item) => ({ ...item, images: portfolioImages[item.id] }))
 
   return (
-    <div>
+    <div className="portfolio" aria-label="Portfolio">
       {portfolioData.map((item, index) => (
         <PortfolioBlock key={item.id} item={item} index={index} />
       ))}

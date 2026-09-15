@@ -71,8 +71,6 @@ const translations = {
     process: {
       label: 'Наш метод',
       title: 'КАК МЫ РАБОТАЕМ',
-      ctaTitle: 'ГОТОВЫ ОБСУДИТЬ ПРОЕКТ?',
-      ctaButton: 'Начать проект',
       steps: [
         {
           number: '01',
@@ -197,8 +195,6 @@ const translations = {
     process: {
       label: 'Our method',
       title: 'HOW WE WORK',
-      ctaTitle: 'READY TO DISCUSS YOUR PROJECT?',
-      ctaButton: 'Start a Project',
       steps: [
         {
           number: '01',
@@ -282,6 +278,7 @@ export function LanguageProvider({ children }) {
     setMeta('meta[name="keywords"]', copy.meta.keywords)
     setMeta('meta[property="og:title"]', copy.meta.ogTitle)
     setMeta('meta[property="og:description"]', copy.meta.ogDescription)
+    setMeta('meta[property="og:locale"]', language === 'ru' ? 'ru_RU' : 'en_US')
     setMeta('meta[name="twitter:title"]', copy.meta.twitterTitle)
     setMeta('meta[name="twitter:description"]', copy.meta.twitterDescription)
   }, [language, copy])
@@ -295,6 +292,8 @@ export function LanguageProvider({ children }) {
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>
 }
 
+// This module intentionally colocates the provider and its companion hook.
+// eslint-disable-next-line react-refresh/only-export-components
 export function useLanguage() {
   const context = useContext(LanguageContext)
   if (!context) throw new Error('useLanguage must be used within LanguageProvider')

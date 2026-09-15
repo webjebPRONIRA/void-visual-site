@@ -1,14 +1,19 @@
 import { useEffect, useRef, useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
+import BackgroundWordmark from '../components/BackgroundWordmark'
 
 function Counter({ value, suffix, isVisible }) {
   const [count, setCount] = useState(0)
+  const [prefersReducedMotion] = useState(
+    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  )
 
   useEffect(() => {
-    if (!isVisible) return
+    if (!isVisible || prefersReducedMotion) return undefined
 
-    const duration = 3000
+    const duration = 1600
     const startTime = Date.now()
+    let frame
 
     const animate = () => {
       const elapsed = Date.now() - startTime
@@ -18,14 +23,15 @@ function Counter({ value, suffix, isVisible }) {
       setCount(current)
 
       if (progress < 1) {
-        requestAnimationFrame(animate)
+        frame = requestAnimationFrame(animate)
       }
     }
 
-    requestAnimationFrame(animate)
-  }, [isVisible, value])
+    frame = requestAnimationFrame(animate)
+    return () => cancelAnimationFrame(frame)
+  }, [isVisible, prefersReducedMotion, value])
 
-  return <span>{count}{suffix}</span>
+  return <span>{isVisible && prefersReducedMotion ? value : count}{suffix}</span>
 }
 
 export default function StatsSection() {
@@ -51,29 +57,17 @@ export default function StatsSection() {
   }, [])
 
   return (
-    <section ref={sectionRef} className="py-20 lg:py-28 border-y border-white/5">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
-          {copy.stats.map((stat, index) => (
-            <div key={`${stat.label}-${index}`} className="text-center">
-              <div
-                className="text-5xl lg:text-7xl xl:text-8xl font-bold tracking-tight mb-2"
-                style={{
-                  background: 'linear-gradient(to bottom, #fff 0%, rgba(255,255,255,0.7) 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                  backgroundClip: 'text',
-                  textShadow: '0 0 40px rgba(255,255,255,0.3)',
-                }}
-              >
-                <Counter value={stat.value} suffix={stat.suffix} isVisible={isVisible} />
-              </div>
-              <p className="text-sm lg:text-base text-white/50 uppercase tracking-wider">
-                {stat.label}
-              </p>
+    <section ref={sectionRef} className="stats-section" aria-label="Statistics">
+      <BackgroundWordmark word="STUDIO" className="section-wordmark section-wordmark-secondary" />
+      <div className="content-container stats-grid">
+        {copy.stats.map((stat, index) => (
+          <div key={`${stat.label}-${index}`} className="stat-item">
+            <div className="stat-value">
+              <Counter value={stat.value} suffix={stat.suffix} isVisible={isVisible} />
             </div>
-          ))}
-        </div>
+            <p>{stat.label}</p>
+          </div>
+        ))}
       </div>
     </section>
   )
