@@ -131,6 +131,7 @@
   pointer-events: none;
   opacity: 0.022;
   mix-blend-mode: soft-light;
+  transform: translateZ(0);
 }
 
 .content-container {
@@ -239,6 +240,8 @@
   z-index: 100;
   isolation: isolate;
   border-bottom: 1px solid transparent;
+  backface-visibility: hidden;
+  transform: translateZ(0);
   transition: background-color 180ms ease, border-color 180ms ease;
 }
 
@@ -473,6 +476,7 @@
   display: flex;
   min-height: 100svh;
   align-items: center;
+  contain: paint;
   overflow: hidden;
   border-bottom: 1px solid var(--line-soft);
 }
@@ -789,6 +793,7 @@
 .portfolio-section {
   position: relative;
   padding-block: clamp(92px, 12vw, 156px);
+  contain: paint;
   overflow: hidden;
   border-bottom: 1px solid var(--line-soft);
   isolation: isolate;
@@ -1149,6 +1154,7 @@
 .process-section {
   position: relative;
   padding-block: clamp(96px, 13vw, 168px);
+  contain: paint;
   overflow: hidden;
   border-bottom: 1px solid var(--line-soft);
   isolation: isolate;
@@ -1291,6 +1297,7 @@
 .site-footer {
   position: relative;
   padding-block: clamp(96px, 13vw, 168px) 36px;
+  contain: paint;
   overflow: hidden;
   background: #08070a;
   isolation: isolate;

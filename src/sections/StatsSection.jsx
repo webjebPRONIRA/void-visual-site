@@ -3,24 +3,35 @@ import { useLanguage } from '../context/LanguageContext'
 import BackgroundWordmark from '../components/BackgroundWordmark'
 
 function Counter({ value, suffix, isVisible }) {
-  const [count, setCount] = useState(0)
-  const [prefersReducedMotion] = useState(
-    () => window.matchMedia('(prefers-reduced-motion: reduce)').matches
-  )
+  const counterRef = useRef(null)
 
   useEffect(() => {
-    if (!isVisible || prefersReducedMotion) return undefined
+    if (!isVisible || !counterRef.current) return undefined
+
+    const counter = counterRef.current
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (prefersReducedMotion) {
+      counter.textContent = `${value}${suffix}`
+      return undefined
+    }
 
     const duration = 1600
-    const startTime = Date.now()
+    let startTime
     let frame
+    let lastCount = -1
 
-    const animate = () => {
-      const elapsed = Date.now() - startTime
+    const animate = (timestamp) => {
+      startTime ??= timestamp
+      const elapsed = timestamp - startTime
       const progress = Math.min(elapsed / duration, 1)
       const eased = 1 - Math.pow(1 - progress, 3)
       const current = Math.floor(eased * value)
-      setCount(current)
+
+      if (current !== lastCount) {
+        counter.textContent = `${current}${suffix}`
+        lastCount = current
+      }
 
       if (progress < 1) {
         frame = requestAnimationFrame(animate)
@@ -29,9 +40,9 @@ function Counter({ value, suffix, isVisible }) {
 
     frame = requestAnimationFrame(animate)
     return () => cancelAnimationFrame(frame)
-  }, [isVisible, prefersReducedMotion, value])
+  }, [isVisible, suffix, value])
 
-  return <span>{isVisible && prefersReducedMotion ? value : count}{suffix}</span>
+  return <span ref={counterRef}>0{suffix}</span>
 }
 
 export default function StatsSection() {

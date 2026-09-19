@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react'
 import { useLanguage } from '../context/LanguageContext'
-import { useLenis } from '../context/LenisContext'
 
 const languageOptions = [
   { code: 'ru', label: 'RU' },
@@ -28,42 +27,65 @@ function LanguageSwitcher({ className = '' }) {
 }
 
 export default function Header() {
-  const [isScrolled, setIsScrolled] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(
+    () => typeof window !== 'undefined' && window.scrollY > 24
+  )
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const { copy } = useLanguage()
-  const lenis = useLenis()
 
   const handleDesktopNavClick = (href) => (event) => {
-    if (window.innerWidth < 1024 || !lenis) return
+    if (window.innerWidth < 1024) return
 
     event.preventDefault()
-    lenis.scrollTo(href === '#' ? 0 : href, { duration: 1.05 })
+    const target = href === '#' ? null : document.querySelector(href)
+    const targetTop = target
+      ? target.getBoundingClientRect().top + window.scrollY - 76
+      : 0
+
+    window.scrollTo({
+      top: Math.max(0, targetTop),
+      behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth',
+    })
   }
 
   useEffect(() => {
-    const handleScroll = () => setIsScrolled(window.scrollY > 24)
-    handleScroll()
+    let frame = null
+    let previousState = window.scrollY > 24
+
+    const handleScroll = () => {
+      if (frame !== null) return
+
+      frame = window.requestAnimationFrame(() => {
+        const nextState = window.scrollY > 24
+        if (nextState !== previousState) {
+          previousState = nextState
+          setIsScrolled(nextState)
+        }
+        frame = null
+      })
+    }
+
     window.addEventListener('scroll', handleScroll, { passive: true })
-    return () => window.removeEventListener('scroll', handleScroll)
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+      if (frame !== null) window.cancelAnimationFrame(frame)
+    }
   }, [])
 
   useEffect(() => {
     if (isMobileMenuOpen) {
-      lenis?.stop()
       document.documentElement.style.overflow = 'hidden'
       document.body.style.overflow = 'hidden'
     } else {
-      lenis?.start()
       document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
     }
 
     return () => {
-      lenis?.start()
       document.documentElement.style.overflow = ''
       document.body.style.overflow = ''
     }
-  }, [isMobileMenuOpen, lenis])
+  }, [isMobileMenuOpen])
 
   return (
     <>

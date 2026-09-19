@@ -1,37 +1,61 @@
 import { useEffect, useRef, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { useLanguage } from '../context/LanguageContext'
-import { useLenis } from '../context/LenisContext'
 import BackgroundWordmark from '../components/BackgroundWordmark'
+
+function portfolioImage(src, width, height) {
+  const previewBase = src
+    .replace('/optimized/', '/optimized/cards/')
+    .replace(/\.webp$/, '')
+  const candidates = [
+    { src: `${previewBase}-800.webp`, width: Math.min(width, 800) },
+  ]
+
+  if (width > 800) {
+    candidates.push({ src: `${previewBase}-1600.webp`, width: Math.min(width, 1600) })
+  }
+
+  if (width > 1600) {
+    candidates.push({ src, width })
+  }
+
+  return {
+    src,
+    width,
+    height,
+    previewSrc: candidates[Math.min(1, candidates.length - 1)].src,
+    previewSrcSet: candidates.map((candidate) => `${candidate.src} ${candidate.width}w`).join(', '),
+  }
+}
 
 const portfolioImages = {
   channels: [
-    { src: '/optimized/оформление1.webp', width: 2400, height: 1792 },
-    { src: '/optimized/оформление2.webp', width: 2400, height: 1792 },
-    { src: '/optimized/оформление3.webp', width: 2400, height: 1792 },
-    { src: '/optimized/оформление4.webp', width: 2400, height: 1792 },
-    { src: '/optimized/оформление5.webp', width: 2336, height: 1824 },
+    portfolioImage('/optimized/оформление1.webp', 2400, 1792),
+    portfolioImage('/optimized/оформление2.webp', 2400, 1792),
+    portfolioImage('/optimized/оформление3.webp', 2400, 1792),
+    portfolioImage('/optimized/оформление4.webp', 2400, 1792),
+    portfolioImage('/optimized/оформление5.webp', 2336, 1824),
   ],
   previews: [
-    { src: '/optimized/1превью1.webp', width: 1920, height: 1098 },
-    { src: '/optimized/1превью2.webp', width: 928, height: 537 },
-    { src: '/optimized/1превью3.webp', width: 929, height: 537 },
-    { src: '/optimized/1превью4.webp', width: 1887, height: 1077 },
-    { src: '/optimized/1превью5.webp', width: 992, height: 563 },
+    portfolioImage('/optimized/1превью1.webp', 1920, 1098),
+    portfolioImage('/optimized/1превью2.webp', 928, 537),
+    portfolioImage('/optimized/1превью3.webp', 929, 537),
+    portfolioImage('/optimized/1превью4.webp', 1887, 1077),
+    portfolioImage('/optimized/1превью5.webp', 992, 563),
   ],
   creatives: [
-    { src: '/optimized/инфографика1.webp', width: 1233, height: 864 },
-    { src: '/optimized/инфографика2.webp', width: 2464, height: 1728 },
-    { src: '/optimized/инфографика3.webp', width: 1233, height: 864 },
-    { src: '/optimized/инфографика4.webp', width: 2464, height: 1728 },
-    { src: '/optimized/инфографика5.webp', width: 2464, height: 1728 },
+    portfolioImage('/optimized/инфографика1.webp', 1233, 864),
+    portfolioImage('/optimized/инфографика2.webp', 2464, 1728),
+    portfolioImage('/optimized/инфографика3.webp', 1233, 864),
+    portfolioImage('/optimized/инфографика4.webp', 2464, 1728),
+    portfolioImage('/optimized/инфографика5.webp', 2464, 1728),
   ],
   other: [
-    { src: '/optimized/прочее1.webp', width: 960, height: 540 },
-    { src: '/optimized/прочее2.webp', width: 736, height: 736 },
-    { src: '/optimized/прочее3.webp', width: 1325, height: 740 },
-    { src: '/optimized/прочее4.webp', width: 1280, height: 960 },
-    { src: '/optimized/прочее5.webp', width: 1200, height: 900 },
+    portfolioImage('/optimized/прочее1.webp', 960, 540),
+    portfolioImage('/optimized/прочее2.webp', 736, 736),
+    portfolioImage('/optimized/прочее3.webp', 1325, 740),
+    portfolioImage('/optimized/прочее4.webp', 1280, 960),
+    portfolioImage('/optimized/прочее5.webp', 1200, 900),
   ],
 }
 
@@ -44,13 +68,10 @@ function Arrow({ direction = 'right' }) {
 }
 
 function Lightbox({ images, currentIndex, title, onClose, onNext, onPrev }) {
-  const lenis = useLenis()
   const { copy } = useLanguage()
   const image = images[currentIndex]
 
   useEffect(() => {
-    lenis?.stop()
-
     const handleKeyDown = (event) => {
       if (event.key === 'Escape') onClose()
       if (event.key === 'ArrowRight') onNext()
@@ -65,9 +86,8 @@ function Lightbox({ images, currentIndex, title, onClose, onNext, onPrev }) {
       document.removeEventListener('keydown', handleKeyDown)
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
-      lenis?.start()
     }
-  }, [lenis, onClose, onNext, onPrev])
+  }, [onClose, onNext, onPrev])
 
   return createPortal(
     <div className="lightbox" role="dialog" aria-modal="true" aria-label={title} onClick={onClose}>
@@ -213,7 +233,9 @@ function ProjectGallery({ images, title }) {
             aria-label={`${copy.carousel.goToSlide} ${index + 1}`}
           >
             <img
-              src={image.src}
+              src={image.previewSrc}
+              srcSet={image.previewSrcSet}
+              sizes="(max-width: 767px) calc(100vw - 32px), (max-width: 1260px) 80vw, 1260px"
               width={image.width}
               height={image.height}
               alt={`${title}. ${copy.carousel.slideAlt} ${index + 1}`}
